@@ -17,6 +17,7 @@
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
 ```
 ##### 末尾数字声调：
@@ -25,6 +26,7 @@
     - xform/ň/ěn/ 
     - xform/ǹ/ěn/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg/én/
     - xform/ňg/ěn/
     - xform/ṅg/èn/
@@ -66,6 +68,7 @@
 ```
     - xform/ń|ň|ǹ/en/   #先处理一些特殊音节
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
 
     - xform/ā/a1 
