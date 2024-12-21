@@ -182,7 +182,6 @@ translator:
 #  candidate_filter: "^(?!abc).*$"  # 过滤掉包含 "abc" 的候选词
 #  user_dict: zrm.userdb  # 用户词典的文件名称
 #  db_class: tabledb  #开启后就不会产生zrm.userdb这样的文件夹，会直接输出文本zrm.txt同时无法使用同步能力
-  enable_sentence: true
   enable_user_dict: false # 是否开启自动调频
   enable_sentence: false
   enable_correction: false #是否开启自动纠错
@@ -995,7 +994,7 @@ __include: 语言模型
     grammar:
       language: amz-v3n2m1-zh-hans
       collocation_max_length: 5
-      collocation_min_length: 2
+      collocation_min_length: 3
     translator/contextual_suggestions: true
     translator/max_homophones: 8
     translator/max_homographs: 8
