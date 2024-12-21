@@ -182,11 +182,12 @@ translator:
 #  candidate_filter: "^(?!abc).*$"  # 过滤掉包含 "abc" 的候选词
 #  user_dict: zrm.userdb  # 用户词典的文件名称
 #  db_class: tabledb  #开启后就不会产生zrm.userdb这样的文件夹，会直接输出文本zrm.txt同时无法使用同步能力
-  enable_user_dict: true # 是否开启自动调频
+  enable_sentence: true
+  enable_user_dict: false # 是否开启自动调频
+  enable_sentence: false
   enable_correction: false #是否开启自动纠错
   encode_commit_history: true   # 预留历史上屏自动编码成词
   initial_quality: 3       # 初始质量拼音的权重应该比英文大
-#  secondary_quality: 0.8  # 设置次要质量
   spelling_hints: 100       # 将注释以词典字符串形式完全暴露，通过pro_comment_format.lua完全接管，灵活配置。
   always_show_comments: true    # Rime 默认在 preedit 等于 comment 时取消显示 comment，这里强制一直显示，供pro_comment_format.lua做判断用。
   comment_format: {comment}  #将注释以词典字符串形式完全暴露，通过pro_comment_preedit_format.lua完全接管，灵活配置。
@@ -438,6 +439,7 @@ punctuator:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
    # - abbrev/^([a-z]).+$/$1/   #简拼
 自然码: 
@@ -445,6 +447,7 @@ punctuator:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - derive/^([jqxy])u$/$1v/
     - derive/^([aoe])([ioun])$/$1$1$2/
@@ -483,6 +486,7 @@ punctuator:
     - xform/ň/ěn/ 
     - xform/ǹ/ěn/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg/én/
     - xform/ňg/ěn/
     - xform/ṅg/èn/
@@ -703,6 +707,7 @@ punctuator:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - derive/^([jqxy])u$/$1v/
     - derive/^([aoe])([ioun])$/$1$1$2/
@@ -739,6 +744,7 @@ punctuator:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - derive/^([jqxy])u$/$1v/
     - derive/^([aoe].*)$/o$1/
@@ -776,6 +782,7 @@ punctuator:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - derive/^([jqxy])u$/$1v/
     - derive/^([aoe].*)$/o$1/
@@ -814,6 +821,7 @@ ABC:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - xform/^zh/Ⓐ/
     - xform/^ch/Ⓔ/
@@ -847,6 +855,7 @@ ABC:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - derive/^([jqxy])u$/$1v/
     - xform/^([aoe].*)$/Ⓞ$1/  # 添上固定的零聲母o，先標記爲大寫O
@@ -882,6 +891,7 @@ ABC:
     - xlit/āáǎàōóǒòēéěèīíǐìūúǔùǖǘǚǜü/aaaaooooeeeeiiiiuuuuvvvvv/
     - xform/ń|ň|ǹ/en/ 
     - xform/\bn\b/en/   #解决𧗈字拼音n通过双拼en打出来
+    - xform/\bng\b/en/
     - xform/ńg|ňg|ǹg/en/
     - erase/^xx$/
     - derive/^([jqxy])u$/$1Ⓥ/
@@ -984,8 +994,8 @@ __include: 语言模型
   __patch:
     grammar:
       language: amz-v3n2m1-zh-hans
-      collocation_max_length: 4
+      collocation_max_length: 5
       collocation_min_length: 2
     translator/contextual_suggestions: true
-    translator/max_homophones: 7
-    translator/max_homographs: 7
+    translator/max_homophones: 8
+    translator/max_homographs: 8
