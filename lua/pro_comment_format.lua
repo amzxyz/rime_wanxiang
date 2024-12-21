@@ -56,7 +56,7 @@ function CR.init(env)
 
     -- 仅在 corrections_cache 为 nil 时加载词典
     if not corrections_cache then
-        local corrections_file_path = rime_api.get_user_data_dir() .. "/cn_dicts/corrections.dict.yaml"
+        local corrections_file_path = rime_api.get_user_data_dir() .. "/cn_dicts/错音错字.dict.yaml"
         CR.corrections = load_corrections(corrections_file_path)
     end
 end
