@@ -544,7 +544,7 @@ punctuator:
     - xform/^(.)(óng|àn|ěi|ī|i)$/$1J/
     - xform/^(.)(ián|ào|ìn|uǐ)$/$1V/
     - xform/^(.)(uáng|āi|ai|í)$/$1B/
-    - xform/^(.)(ǒu|īu|iu|ǐu)$/$1Z/
+    - xform/^(.)(ǒu|iū|iǔ|iu)$/$1Z/
     - xform/^(.)(uá|uī|ui|ì)$/$1T/
     - xform/^(.)(ū|u|óu|iàn)$/$1A/
     - xform/^(.)(āo|ao|iè)$/$1Q/
