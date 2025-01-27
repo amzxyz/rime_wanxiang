@@ -289,7 +289,6 @@ sort: by_weight
 大安	dà ān	601
 大埔	dà bù	647
 大厂	dà chǎng	685
-大城	dà chéng	755
 达川	dá chuān	409
 大村	dà cūn	529
 大东	dà dōng	638
@@ -337,6 +336,7 @@ sort: by_weight
 大竹	dà zhú	534
 达孜	dá zī	421
 大足	dà zú	550
+大城	dài chéng	755
 岱山	dài shān	465
 代县	dài xiàn	468
 岱岳	dài yuè	416
@@ -1218,7 +1218,7 @@ sort: by_weight
 乐安	lè ān	514
 乐昌	lè chāng	458
 乐东	lè dōng	470
-乐都	lè dōu	502
+乐都	lè dū	502
 乐陵	lè líng	481
 乐平	lè píng	544
 乐山	lè shān	650
@@ -1503,8 +1503,8 @@ sort: by_weight
 玛曲	mǎ qū	392
 马山	mǎ shān	729
 麻山	má shān	355
+马尾	mǎ wěi	676
 麻阳	má yáng	430
-马尾	mǎ yǐ	676
 麻章	má zhāng	350
 麦积	mài jī	491
 麦寮	mài liáo	1
@@ -3399,8 +3399,6 @@ sort: by_weight
 达坂城	dá bǎn chéng	432
 大埔县	dà bù xiàn	430
 大埔乡	dà bù xiāng	1
-大城县	dà chéng xiàn	365
-大城乡	dà chéng xiāng	1
 达川区	dá chuān qū	1
 大村乡	dà cūn xiāng	1
 大东区	dà dōng qū	484
@@ -3453,6 +3451,8 @@ sort: by_weight
 大竹县	dà zhú xiàn	412
 达孜区	dá zī qū	1
 大足区	dà zú qū	1
+大城县	dài chéng xiàn	365
+大城乡	dài chéng xiāng	1
 岱山县	dài shān xiàn	365
 岱岳区	dài yuè qū	384
 丹巴县	dān bā xiàn	396
@@ -4354,7 +4354,7 @@ sort: by_weight
 乐亭县	lào tíng xiàn	402
 乐安县	lè ān xiàn	382
 乐昌市	lè chāng shì	349
-乐都区	lè dōu qū	1
+乐都区	lè dū qū	1
 乐陵市	lè líng shì	371
 乐平市	lè píng shì	370
 乐山市	lè shān shì	521
@@ -4646,7 +4646,7 @@ sort: by_weight
 玛曲县	mǎ qū xiàn	297
 麻山区	má shān qū	164
 马山县	mǎ shān xiàn	392
-马尾区	mǎ yǐ qū	425
+马尾区	mǎ wěi qū	425
 麻章区	má zhāng qū	317
 麦盖提	mài gài tí	390
 麦积区	mài jī qū	1
