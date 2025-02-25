@@ -84,8 +84,7 @@ engine:
   translators:
     - punct_translator
     - script_translator
-    - lua_translator@*date_translator    # 时间、日期、星期
-    - lua_translator@*lunar              # 农历
+    - lua_translator@*shijian            #农历、日期、节气、时间、周等等
     - lua_translator@*unicode            # Unicode
     - lua_translator@*number_translator  # 数字、金额大写
     - lua_translator@*calculator        # 计算器
@@ -109,7 +108,6 @@ engine:
     - simplifier@mars                               #火星文
     - simplifier@chinese_english                    #中英翻译
     - lua_filter@*search@radical_pinyin             # 部件拆字辅码放在简繁转换之后
-    #- lua_filter@*en_spacer                         #启用时中文状态下输入英文单词后面自动追加空格
     - lua_filter@*pro_comment_format                #超级注释模块，支持错词提示、辅助码显示，部件组字读音注释，支持个性化配置和关闭相应的功能，详情搜索pro_comment_format进行详细配置
     - uniquifier                                    # 去重
 
@@ -122,16 +120,17 @@ pro_comment_format:
   tone_display: "preedit"       #显示到输入码还是注释里  选项为preedit, comment
 
 
-# Lua 配置: 日期、时间、星期、ISO 8601、时间戳的触发关键字
-date_translator:
-  date: /rq            # 日期： 2022-11-29
-  time: /sj            # 时间： 18:13
-  week: /wk            # 星期： 星期二
-  datetime: /dt    # ISO 8601： 2022-11-29T18:13:11+08:00
-  timestamp: /tt  # 时间戳： 1669716794
+#shijian:仅仅作为提示使用，编码已经写死，引导适应性更高，如有需求lua中修改
+#时间：osj 或者 /sj
+#日期：orq 或者 /rq
+#农历：onl 或者 /nl
+#星期：oxq 或者 /xq
+#今年第几周：oww 或者 /ww
+#节气：ojq 或者 /jq
+#日期+时间：ors 或者 /rs
+#时间戳：ott 或者 /tt
+#N日期：N20250315
 
-# Lua 配置：农历的触发关键字
-lunar: /nl  # 农历： 二〇二三年冬月二十 癸卯年（兔）冬月二十
 
 # Lua 配置：计算器触发关键字
 calculator:

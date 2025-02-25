@@ -3,7 +3,7 @@
 #https://github.com/amzxyz/RIME-LMDG
 ---
 name: chars
-version: "2025-02-25 00:05"
+version: "2025-02-26 00:31"
 sort: by_weight
 ...
 啊	a	915
@@ -18845,17 +18845,17 @@ sort: by_weight
 𩩾	kāo	1
 𫝲	kāo	1
 可	kě	889
+棵	kē	856
+颗	kē	833
+克	kè	812
 科	kē	804
 客	kè	786
-克	kè	782
 课	kè	737
 刻	kè	719
-颗	kē	660
 壳	ké	633
 柯	kē	618
 渴	kě	608
 咳	ké	598
-棵	kē	563
 磕	kē	545
 苛	kē	544
 坷	kě	498
@@ -48571,6 +48571,7 @@ sort: by_weight
 𪎻	zhèng	1
 𪨘	zhēng	1
 𫖖	zhèng	1
+支	zhī	855
 只	zhǐ	848
 值	zhí	838
 知	zhī	820
@@ -48582,7 +48583,6 @@ sort: by_weight
 指	zhǐ	789
 智	zhì	779
 治	zhì	778
-支	zhī	777
 致	zhì	767
 置	zhì	763
 职	zhí	759
@@ -49924,12 +49924,12 @@ sort: by_weight
 𬤥	zhuàn	1
 装	zhuāng	784
 状	zhuàng	752
+幢	zhuàng	699
 庄	zhuāng	681
 妆	zhuāng	668
 撞	zhuàng	654
 壮	zhuàng	648
 桩	zhuāng	560
-幢	zhuàng	521
 裝	zhuāng	465
 狀	zhuàng	411
 莊	zhuāng	342
