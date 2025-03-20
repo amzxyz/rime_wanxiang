@@ -8,14 +8,15 @@
 
 | 操作类型       | 语法                      | 说明                         |
 | -------------- | ------------------------- | ---------------------------- |
-| **新增**       | `key/+:`                  | 在某个列表中追加值           |
-| **删除**       | `key/-:`（不可用）        | 从列表中移除值（不可用）     |
-| **全局替换**   | `key: new_value`          | 替换整个键的值               |
-| **部分替换**   | `key/index/subkey: value` | 修改列表中的特定项           |
-| **特定行追加** | engine/filters/@12        | 从0开始计算                  |
-| **末尾追加**   | engine/processors/@last   | 不管列表多长他都会追加到末尾 |
+| **新增**       | `key/+:`                  | 在某个列表中追加值,自动加在末尾 |
+| **删除**       | `key/-:`（不可用）        | 从列表中移除值（不可用）        |
+| **全局替换**   | `key: new_value`          | 替换整个键的值                |
+| **部分替换**   | `key/index/subkey: value` | 修改列表中的特定项,不影响其他项 |
+| **特定行替换** | engine/filters/@12        | 替换列表中第13行的值           |
+| **末尾行替换** | engine/processors/@last   | 替换列表中最后一行的值         |
+| **特定行追加** | engine/filters/@before 5  | 在第6行插入新值，原值后移一行   |
 
-
+注意：在进行有关特定行的操作时，请注意列表的计数是从0开始的。例如，如果想在第5行插入一个值，应该使用`@before 4`。如果要替换第5行的值，应该使用`@4`。
 
 ---
 
@@ -82,7 +83,7 @@ patch:
 patch:
   engine:
     translators:
-      - table_translator@custom_phrase
+      - table_translator@custom_phrase  #此例会替换整个engine模块的值，只保留translators下的table_translator@custom_phrase，其他值全部删除
 
 ```
 
@@ -90,7 +91,7 @@ patch:
 #部分替换
 patch:
   engine/translators:
-    - table_translator@custom_phrase
+    - table_translator@custom_phrase  #此例只会替换engine下的translators模块的值为table_translator@custom_phrase，translators模块的其他值全部删除，而engine其他模块的值不受影响
 
 ```
 
@@ -98,7 +99,7 @@ patch:
 #追加新的内容
 patch:
   engine/translators/+:
-    - table_translator@custom_phrase
+    - table_translator@custom_phrase  #此例只在engine下的translators模块下新增table_translator@custom_phrase，translators模块的其他值不变，engine其他模块的值也不受影响
 
 ```
 
@@ -136,22 +137,22 @@ patch:
 
 最后还要注意一点，非常重要：
 
-在engine模块下面的选项是有顺序的，所以想要新增一个行，需要判断添加到末尾是否可以用，如果是一个引导器就不能下面这样添加，这会导致这一行排列在最后，导致功能不能是用
+在engine模块下面的选项是有顺序的，所以想要新增一个行，需要判断添加到末尾是否可用，如果是一个引导器就不能下面这样添加，这会导致这一行排列在最后，导致功能不能使用
 
 ```
 #追加新的内容
 patch:
-  engine/translators/+:
+  engine/translators/+:   #这种方式将把新增值自动加在列表末尾，导致功能失效
     - table_translator@custom_phrase
 ```
 
-应该使用**特定行追加**  engine/translator/@before 5 意思就是放到filters下面的第六行
+应该使用**特定行追加**  engine/translator/@before 5 意思就是放到translator下面的第6行，而原来第6行的值会移到第7行，其他的依次后移
 
 ```
 patch:
-  engine/translator/@before 5:  #这种方式将在这一行后面新增一行，其它后移
-    table_translator@custom_phrase   #注意前面不能加短线了这样才是一个值，而不是一个表
-  engine/translator/@5:    #这种方式将替换这一行
-    table_translator@custom_phrase   #注意前面不能加短线了这样才是一个值，而不是一个表
+  engine/translator/@before 5:  #这种方式将在第5行后面新增一行，后面的行后移
+    table_translator@custom_phrase   #注意前面不能加短线了，这样才是一个值，而不是一个表
+  engine/translator/@5:    #这种方式将替换第6行的值
+    table_translator@custom_phrase   #注意前面不能加短线了，这样才是一个值，而不是一个表
 ```
 
