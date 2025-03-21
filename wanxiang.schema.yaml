@@ -334,7 +334,7 @@ punctuator:
 key_binder:
   import_preset: default  # 从 default.yaml 继承通用的
   # Lua 配置: 超级tips上屏按键
-  tips_key: "slash"   #修改时候去default找
+  tips_key: "period"   #修改时候去default找
   # Lua 配置: 以词定字（上屏当前词句的第一个或最后一个字），和中括号翻页有冲突
   select_first_character: "bracketleft"  # 左中括号 [
   select_last_character: "bracketright"  # 右中括号 ]
