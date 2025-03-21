@@ -98,10 +98,10 @@ jobs:
           name: "每夜构建-词库更新"
           body: |
             - `cn_dicts.zip`：最新的中文词库文件。
-            - `wanxiang-lts-zh-hans.gram`：与词库同步更新的语法模型。
+#            - `wanxiang-lts-zh-hans.gram`：与词库同步更新的语法模型。
           files: |
             dist/cn_dicts.zip
-            wanxiang-lts-zh-hans.gram
+#            wanxiang-lts-zh-hans.gram
           draft: false        # 确保不是草稿
           prerelease: false   # 确保不是预发布版本
           make_latest: true   # 强制标记为最新版本

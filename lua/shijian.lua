@@ -907,64 +907,39 @@ end
 -- end
 
 function GetNowTimeJq(date)
-  date = tostring(date)
-  if string.len(date) < 8 then
-    return "无效日期"
+	local JQtable1, JQtable2
+	date = tostring(date)
+	if string.len(date) < 8 then
+	  return "无效日期"
+	end
+	JQtable2 = GetNextJQ(date)
+	if tonumber(string.sub(date, 5, 8)) < 322 then
+	  JQtable1 = GetNextJQ(tonumber(string.sub(date, 1, 4)) - 1 .. string.sub(date, 5, 8))
+	  -- print(#JQtable1)
+	  if tonumber(string.sub(date, 5, 8)) < 108 then
+		for i = 20, 24 do
+		  table.insert(JQtable2, i - 19, JQtable1[i])
+		end
+	  elseif tonumber(string.sub(date, 5, 8)) < 122 then
+		for i = 21, 24 do
+		  table.insert(JQtable2, i - 20, JQtable1[i])
+		end
+	  elseif tonumber(string.sub(date, 5, 8)) < 206 then
+		for i = 22, 24 do
+		  table.insert(JQtable2, i - 21, JQtable1[i])
+		end
+	  elseif tonumber(string.sub(date, 5, 8)) < 221 then
+		for i = 23, 24 do
+		  table.insert(JQtable2, i - 22, JQtable1[i])
+		end
+	  else
+		table.insert(JQtable2, 1, JQtable1[24])
+	  end
+	  -- print(table.concat(JQtable2))
+	end
+	return JQtable2
   end
-
-  local now = os.time()
-  local result = {}
-
-  -- 从“倒退日期”获取的节气（含过去和未来）
-  local JQtable2 = GetNextJQ(date)
-
-  -- 过滤 JQtable2，保留“今天及之后”的节气
-  for _, jq in ipairs(JQtable2 or {}) do
-    local date_str = jq:match("(%d+-%d+-%d+)$")
-    if date_str then
-      local y, m, d = date_str:match("(%d+)-(%d+)-(%d+)")
-      if y and m and d then
-        local t = os.time({year = tonumber(y), month = tonumber(m), day = tonumber(d)})
-        if t >= now then
-          table.insert(result, jq)
-        end
-      end
-    end
-  end
-
-  -- 只补充一个“最近的过去节气
-  if tonumber(string.sub(date, 5, 8)) < 322 then
-    local last_year_date = tostring(tonumber(string.sub(date, 1, 4)) - 1) .. string.sub(date, 5, 8)
-    local JQtable1 = GetNextJQ(last_year_date)
-
-    local closest_past_jieqi = nil
-    local closest_diff = nil
-
-    for _, jq in ipairs(JQtable1 or {}) do
-      local date_str = jq:match("(%d+-%d+-%d+)$")
-      if date_str then
-        local y, m, d = date_str:match("(%d+)-(%d+)-(%d+)")
-        if y and m and d then
-          local t = os.time({year = tonumber(y), month = tonumber(m), day = tonumber(d)})
-          local diff = os.difftime(now, t)
-          if diff > 0 then  -- 是过去节气
-            if not closest_diff or diff < closest_diff then
-              closest_diff = diff
-              closest_past_jieqi = jq
-            end
-          end
-        end
-      end
-    end
-
-    if closest_past_jieqi then
-      table.insert(result, 1, closest_past_jieqi)
-    end
-  end
-
-  return result
-end
-
+  
 
 -- 公历转干支历实现
 --[[干支历的年以立春发生时刻（注意，不是立春日的0时）为年干支的起点；各月干支以十二节时刻（注意，不一定是各节气日的0时）
@@ -1457,7 +1432,7 @@ function Date2LunarDate(Gregorian)
                        "DA500C9", "755027A", "56A00D1", "ABB0781", "25D00DA", "92D00CF", "CAB057E", "A9500D6",
                        "B4A00CB", "BAA047B", "AD500D2", "55D0983", "4BA00DB", "A5B00D0", "5171680", "52B00D8",
                        "A9300CD", "795047D", "6AA00D4", "AD500C9", "5B5027A", "4B600D2", "96E0681", "A4E00D9",
-                       "D2600CE", "EA6057E", "D5300D5", "5AA00CB", "76A037B", "96D00D3", "4AB0B83", "4AD00DB",
+                       "D2600CE", "EA6057E", "D5300D5", "5AA00CB", "76A037B", "96D00D3", "4AF0B83", "4AD00DB",
                        "A4D00D0", "D0B1680", "D2500D7", "D5200CC", "DD4057C", "B5A00D4", "56D00C9", "55B027A",
                        "49B00D2", "A570782", "A4B00D9", "AA500CE", "B25157E", "6D200D6", "ADA00CA", "4B6137B",
                        "93700D3", "49F08C9", "49700DB", "64B00D0", "68A1680", "EA500D7", "6AA00CC", "A6C147C",
@@ -1617,7 +1592,7 @@ function LunarDate2Date(Gregorian, IsLeap)
                "96D0580", "92E00D8", "C9600CD", "D95047C", "D4A00D4", "DA500C9", "755027A", "56A00D1", "ABB0781",
                "25D00DA", "92D00CF", "CAB057E", "A9500D6", "B4A00CB", "BAA047B", "AD500D2", "55D0983", "4BA00DB",
                "A5B00D0", "5171680", "52B00D8", "A9300CD", "795047D", "6AA00D4", "AD500C9", "5B5027A", "4B600D2",
-               "96E0681", "A4E00D9", "D2600CE", "EA6057E", "D5300D5", "5AA00CB", "76A037B", "96D00D3", "4AB0B83",
+               "96E0681", "A4E00D9", "D2600CE", "EA6057E", "D5300D5", "5AA00CB", "76A037B", "96D00D3", "4AF0B83",
                "4AD00DB", "A4D00D0", "D0B1680", "D2500D7", "D5200CC", "DD4057C", "B5A00D4", "56D00C9", "55B027A",
                "49B00D2", "A570782", "A4B00D9", "AA500CE", "B25157E", "6D200D6", "ADA00CA", "4B6137B", "93700D3",
                "49F08C9", "49700DB", "64B00D0", "68A1680", "EA500D7", "6AA00CC", "A6C147C", "AAE00D4", "92E00CA",
@@ -2245,8 +2220,8 @@ local function translator(input, seg, env)
             local diff_days = days_until(target_time)
             return diff_days
         end
-        -- 遍历候选中最近的 4 个节气，原因是上面向后计算了一个节气
-        for i = 1, math.min(4, #jqs) do
+        -- 遍历候选中最近的 3 个节气，原因是上面向后计算了一个节气
+        for i = 1, math.min(3, #jqs) do
             local jieqi = jqs[i]
             local diff_days = days_until_jieqi(jieqi)
         
@@ -2257,15 +2232,7 @@ local function translator(input, seg, env)
                 table.insert(upcoming_jqs, jieqi)
             end
         end
-        -- 处理 upcoming_jqs 选取逻辑
-        if zero_jieqi then
-            -- **今天是节气，取后两个节气**
-            upcoming_jqs = {jqs[3], jqs[4]}
-        else
-            -- **今天不是节气，取前两个节气**
-            upcoming_jqs = {jqs[2], jqs[3]}
-        end
-        
+
         -- 获取每个节气的距离天数
         local jieqi_days = {}
         for _, jieqi in ipairs(upcoming_jqs) do
