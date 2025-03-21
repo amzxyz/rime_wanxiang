@@ -907,47 +907,64 @@ end
 -- end
 
 function GetNowTimeJq(date)
-  local JQtable1, JQtable2
   date = tostring(date)
   if string.len(date) < 8 then
     return "无效日期"
   end
-  JQtable2 = GetNextJQ(date)
-  if tonumber(string.sub(date, 5, 8)) < 322 then
-    JQtable1 = GetNextJQ(tonumber(string.sub(date, 1, 4)) - 1 .. string.sub(date, 5, 8))
-    -- print(#JQtable1)
-    if tonumber(string.sub(date, 5, 8)) < 108 then
-      for i = 20, 24 do
-        table.insert(JQtable2, i - 19, JQtable1[i])
+
+  local now = os.time()
+  local result = {}
+
+  -- 从“倒退日期”获取的节气（含过去和未来）
+  local JQtable2 = GetNextJQ(date)
+
+  -- 过滤 JQtable2，保留“今天及之后”的节气
+  for _, jq in ipairs(JQtable2 or {}) do
+    local date_str = jq:match("(%d+-%d+-%d+)$")
+    if date_str then
+      local y, m, d = date_str:match("(%d+)-(%d+)-(%d+)")
+      if y and m and d then
+        local t = os.time({year = tonumber(y), month = tonumber(m), day = tonumber(d)})
+        if t >= now then
+          table.insert(result, jq)
+        end
       end
-    elseif tonumber(string.sub(date, 5, 8)) < 122 then
-      for i = 21, 24 do
-        table.insert(JQtable2, i - 20, JQtable1[i])
-      end
-    elseif tonumber(string.sub(date, 5, 8)) < 206 then
-      for i = 22, 24 do
-        table.insert(JQtable2, i - 21, JQtable1[i])
-      end
-    elseif tonumber(string.sub(date, 5, 8)) < 221 then
-      for i = 23, 24 do
-        table.insert(JQtable2, i - 22, JQtable1[i])
-      end
-    else
-      table.insert(JQtable2, 1, JQtable1[24])
     end
-    -- print(table.concat(JQtable2))
   end
-  return JQtable2
+
+  -- 只补充一个“最近的过去节气
+  if tonumber(string.sub(date, 5, 8)) < 322 then
+    local last_year_date = tostring(tonumber(string.sub(date, 1, 4)) - 1) .. string.sub(date, 5, 8)
+    local JQtable1 = GetNextJQ(last_year_date)
+
+    local closest_past_jieqi = nil
+    local closest_diff = nil
+
+    for _, jq in ipairs(JQtable1 or {}) do
+      local date_str = jq:match("(%d+-%d+-%d+)$")
+      if date_str then
+        local y, m, d = date_str:match("(%d+)-(%d+)-(%d+)")
+        if y and m and d then
+          local t = os.time({year = tonumber(y), month = tonumber(m), day = tonumber(d)})
+          local diff = os.difftime(now, t)
+          if diff > 0 then  -- 是过去节气
+            if not closest_diff or diff < closest_diff then
+              closest_diff = diff
+              closest_past_jieqi = jq
+            end
+          end
+        end
+      end
+    end
+
+    if closest_past_jieqi then
+      table.insert(result, 1, closest_past_jieqi)
+    end
+  end
+
+  return result
 end
 
-local function main()
-  print(GetNowTimeJq("20210101"))
-  -- print(JQtest("20210323")) --测试函数
-  -- print(table.concat(GetNextJQ("20210101")))
-end
-
--- main()
--- *******农历节气计算部分结束
 
 -- 公历转干支历实现
 --[[干支历的年以立春发生时刻（注意，不是立春日的0时）为年干支的起点；各月干支以十二节时刻（注意，不一定是各节气日的0时）
