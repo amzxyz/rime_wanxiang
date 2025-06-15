@@ -95,6 +95,7 @@ engine:
     - lua_translator@*unicode            #通过输入大写U引导，并输入Unicode编码获得汉字输出
     - lua_translator@*number_translator  #数字、金额大写，通过输入大写R1234获得候选输出
     - lua_translator@*super_calculator   #超级计算器，Lua内查看高级用法
+    - lua_translator@*input_statistics     #一个输入统计的脚本，以日、周、月、年等维度的统计
     - table_translator@custom_phrase     #自定义短语 custom_phrase.txt，用于置顶自定义编码候选词
     - table_translator@wanxiang_en       #挂接英文输入，参与中英混输
     - table_translator@cn_en             #中英混合词汇表导入
