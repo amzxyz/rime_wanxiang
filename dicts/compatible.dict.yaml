@@ -7,7 +7,9 @@ name: compatible
 version: "LTS"
 sort: by_weight
 ...
-大王	dài wang
+没收	méi shōu	407
+暴晒	pù shài
+大王	dài wang	430
 教会	jiāo huì	702
 爱教	ài jiāo	352
 不教	bù jiāo	491
@@ -2218,7 +2220,7 @@ sort: by_weight
 练熟	liàn shóu	395
 两熟	liǎng shóu	302
 蛮熟	mán shóu	294
-没熟	méi shóu	490
+没熟	méi shóu	410
 面熟	miàn shóu	400
 摸熟	mō shóu	312
 轻熟	qīng shóu	419

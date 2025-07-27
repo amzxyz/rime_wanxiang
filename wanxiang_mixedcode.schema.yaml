@@ -2,7 +2,7 @@
 # encoding: utf-8
 ###############选择与之匹配的拼音方案#####################
 set_shuru_schema:
-  __include: 自然码    #可选的选项有（全拼, 自然码, 小鹤双拼, 微软双拼, 搜狗双拼, 智能ABC, 紫光双拼, 拼音加加）
+  __include: 全拼    #可选的选项有（全拼, 自然码, 小鹤双拼, 微软双拼, 搜狗双拼, 智能ABC, 紫光双拼, 拼音加加）
 ######################################################
 schema:
   schema_id: wanxiang_mixedcode
@@ -126,33 +126,33 @@ translator:
     - xform/^([aoe])(ng)?(?=^|$|')/$1$1$2/
     - xform/'([aoe])(ng)?(?=^|$|')/'$1$1$2/
     - xform/iu(?=^|$|')/<q>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<w>/        #前面负向零宽断言Lua
+    - xform/[iu]a(?=^|$|')/<w>/
     - xform/[uv]an(?=^|$|')/<r>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')/<t>/  #前面负向零宽断言cue
+    - xform/[uv]e(?=^|$|')/<t>/
     - xform/ing(?=^|$|')|uai(?=^|$|')/<y>/
-    - xform/^sh(?!.{1}[bcdefghjklmnpqrstvwxyz])/<u>/      #第四位为特定字母的不匹配，如shell的l
-    - xform/^ch(?!.{1}[bcdefghjklmnpqrstvwxyz])/<i>/
-    - xform/^zh(?!.{1}[bcdefghjklmnpqrstvwxyz])/<v>/
+    - xform/^sh/<u>/
+    - xform/^ch/<i>/
+    - xform/^zh/<v>/
     - xform/'sh/'<u>/
     - xform/'ch/'<i>/
     - xform/'zh/'<v>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/[uv]n(?=^|$|')/<p>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<s>/
-    - xform/[iu]ang(?=^|$|')/<d>/
-    - xform/([a-z>])en(?=^|$|')/$1<f>/
-    - xform/([a-z>])eng(?=^|$|')/$1<g>/
-    - xform/([a-z>])ang(?=^|$|')/$1<h>/
-    - xform/ian(?=^|$|')/<m>/
-    - xform/([a-z>])an(?=^|$|')/$1<j>/
-    - xform/iao(?=^|$|')/<c>/
-    - xform/([a-z>])ao(?=^|$|')/$1<k>/
-    - xform/([a-z>])ai(?=^|$|')/$1<l>/
-    - xform/([a-z>])ei(?=^|$|')/$1<z>/
-    - xform/ie(?=^|$|')/<x>/
-    - xform/ui(?=^|$|')/<v>/
-    - xform/([a-z>])ou(?=^|$|')/$1<b>/
-    - xform/in(?=^|$|')/<n>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])[uv]n(?=^|$|')/<p>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<d>/
+    - xform/(?<![A-Z])([a-z>])en(?=^|$|')/$1<f>/
+    - xform/(?<![A-Z])([a-z>])eng(?=^|$|')/$1<g>/
+    - xform/(?<![A-Z])([a-z>])ang(?=^|$|')/$1<h>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<m>/
+    - xform/(?<![A-Z])([a-z>])an(?=^|$|')/$1<j>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<c>/
+    - xform/(?<![A-Z])([a-z>])ao(?=^|$|')/$1<k>/
+    - xform/(?<![A-Z])([a-z>])ai(?=^|$|')/$1<l>/
+    - xform/(?<![A-Z])([a-z>])ei(?=^|$|')/$1<z>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<x>/
+    - xform/(?<![A-Z])ui(?=^|$|')/<v>/
+    - xform/(?<![A-Z])([a-z>])ou(?=^|$|')/$1<b>/
+    - xform/(?<![A-Z])in(?=^|$|')/<n>/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -166,34 +166,34 @@ translator:
     - derive/'([aoe])([ioun])(?=^|$|')/'$1$1$2/
     - xform/^([aoe])(ng)?(?=^|$|')/$1$1$2/
     - xform/'([aoe])(ng)?(?=^|$|')/'$1$1$2/
-    - xform/iu(?=^|$|')/<q>/
-    - xform/(.)ei(?=^|$|')/$1<w>/
-    - xform/uan(?=^|$|')/<r>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')/<t>/
-    - xform/un(?=^|$|')/<y>/
+    - xform/(?<![A-Z])iu(?=^|$|')/<q>/
+    - xform/(?<![A-Z])(.)ei(?=^|$|')/$1<w>/
+    - xform/(?<![A-Z])uan(?=^|$|')/<r>/
+    - xform/(?<![A-Z])[uv]e(?=^|$|')/<t>/
+    - xform/(?<![A-Z])un(?=^|$|')/<y>/
     - xform/^sh/<u>/
     - xform/^ch/<i>/
     - xform/^zh/<v>/
     - xform/'sh/'<u>/
     - xform/'ch/'<i>/
     - xform/'zh/'<v>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/ie(?=^|$|')/<p>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<s>/
-    - xform/ing(?=^|$|')|uai(?=^|$|')/<k>/
-    - xform/([a-z>])ai(?=^|$|')/$1<d>/
-    - xform/([a-z>])en(?=^|$|')/$1<f>/
-    - xform/([a-z>])eng(?=^|$|')/$1<g>/
-    - xform/[iu]ang(?=^|$|')/<l>/
-    - xform/([a-z>])ang(?=^|$|')/$1<h>/
-    - xform/ian(?=^|$|')/<m>/
-    - xform/([a-z>])an(?=^|$|')/$1<j>/
-    - xform/([a-z>])ou(?=^|$|')/$1<z>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<x>/
-    - xform/iao(?=^|$|')/<n>/
-    - xform/([a-z>])ao(?=^|$|')/$1<c>/
-    - xform/ui(?=^|$|')/<v>/
-    - xform/in(?=^|$|')/<b>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<p>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])ing(?=^|$|')|(?<![A-Z])uai(?=^|$|')/<k>/
+    - xform/(?<![A-Z])([a-z>])ai(?=^|$|')/$1<d>/
+    - xform/(?<![A-Z])([a-z>])en(?=^|$|')/$1<f>/
+    - xform/(?<![A-Z])([a-z>])eng(?=^|$|')/$1<g>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<l>/
+    - xform/(?<![A-Z])([a-z>])ang(?=^|$|')/$1<h>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<m>/
+    - xform/(?<![A-Z])([a-z>])an(?=^|$|')/$1<j>/
+    - xform/(?<![A-Z])([a-z>])ou(?=^|$|')/$1<z>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<x>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<n>/
+    - xform/(?<![A-Z])([a-z>])ao(?=^|$|')/$1<c>/
+    - xform/(?<![A-Z])ui(?=^|$|')/<v>/
+    - xform/(?<![A-Z])in(?=^|$|')/<b>/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -207,36 +207,36 @@ translator:
     - derive/'([aoe].*)(?=^|$|')/'o$1/
     - xform/^([ae])(.*)(?=^|$|')/$1$1$2/
     - xform/'([ae])(.*)(?=^|$|')/'$1$1$2/
-    - xform/iu(?=^|$|')/<q>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<w>/
-    - xform/er(?=^|$|')|[uv]an(?=^|$|')/<r>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')/<t>/
-    - xform/v(?=^|$|')|uai(?=^|$|')/<y>/
+    - xform/(?<![A-Z])iu(?=^|$|')/<q>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<w>/
+    - xform/(?<![A-Z])er(?=^|$|')|(?<![A-Z])[uv]an(?=^|$|')/<r>/
+    - xform/(?<![A-Z])[uv]e(?=^|$|')/<t>/
+    - xform/(?<![A-Z])v(?=^|$|')|(?<![A-Z])uai(?=^|$|')/<y>/
     - xform/^sh/<u>/
     - xform/^ch/<i>/
     - xform/^zh/<v>/
     - xform/'sh/'<u>/
     - xform/'ch/'<i>/
     - xform/'zh/'<v>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/[uv]n(?=^|$|')/<p>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<s>/
-    - xform/[iu]ang(?=^|$|')/<d>/
-    - xform/([a-z>])en(?=^|$|')/$1<f>/
-    - xform/([a-z>])eng(?=^|$|')/$1<g>/
-    - xform/([a-z>])ang(?=^|$|')/$1<h>/
-    - xform/ian(?=^|$|')/<m>/
-    - xform/([a-z>])an(?=^|$|')/$1<j>/
-    - xform/iao(?=^|$|')/<c>/
-    - xform/([a-z>])ao(?=^|$|')/$1<k>/
-    - xform/([a-z>])ai(?=^|$|')/$1<l>/
-    - xform/([a-z>])ei(?=^|$|')/$1<z>/
-    - xform/ie(?=^|$|')/<x>/
-    - xform/ui(?=^|$|')/<v>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])[uv]n(?=^|$|')/<p>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<d>/
+    - xform/(?<![A-Z])([a-z>])en(?=^|$|')/$1<f>/
+    - xform/(?<![A-Z])([a-z>])eng(?=^|$|')/$1<g>/
+    - xform/(?<![A-Z])([a-z>])ang(?=^|$|')/$1<h>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<m>/
+    - xform/(?<![A-Z])([a-z>])an(?=^|$|')/$1<j>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<c>/
+    - xform/(?<![A-Z])([a-z>])ao(?=^|$|')/$1<k>/
+    - xform/(?<![A-Z])([a-z>])ai(?=^|$|')/$1<l>/
+    - xform/(?<![A-Z])([a-z>])ei(?=^|$|')/$1<z>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<x>/
+    - xform/(?<![A-Z])ui(?=^|$|')/<v>/
     - derive/<t>(?=^|$|')/<v>/
-    - xform/([a-z>])ou(?=^|$|')/$1<b>/
-    - xform/in(?=^|$|')/<n>/
-    - xform/ing(?=^|$|')/;/
+    - xform/(?<![A-Z])([a-z>])ou(?=^|$|')/$1<b>/
+    - xform/(?<![A-Z])in(?=^|$|')/<n>/
+    - xform/(?<![A-Z])ing(?=^|$|')/;/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -250,35 +250,35 @@ translator:
     - derive/'([aoe].*)(?=^|$|')/'o$1/
     - xform/^([ae])(.*)(?=^|$|')/$1$1$2/
     - xform/'([ae])(.*)(?=^|$|')/'$1$1$2/
-    - xform/iu(?=^|$|')/<q>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<w>/
-    - xform/er(?=^|$|')|[uv]an(?=^|$|')/<r>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')/<t>/
-    - xform/v(?=^|$|')|uai(?=^|$|')/<y>/
+    - xform/(?<![A-Z])iu(?=^|$|')/<q>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<w>/
+    - xform/(?<![A-Z])er(?=^|$|')|(?<![A-Z])[uv]an(?=^|$|')/<r>/
+    - xform/(?<![A-Z])[uv]e(?=^|$|')/<t>/
+    - xform/(?<![A-Z])v(?=^|$|')|(?<![A-Z])uai(?=^|$|')/<y>/
     - xform/^sh/<u>/
     - xform/^ch/<i>/
     - xform/^zh/<v>/
     - xform/'sh/'<u>/
     - xform/'ch/'<i>/
     - xform/'zh/'<v>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/[uv]n(?=^|$|')/<p>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<s>/
-    - xform/[iu]ang(?=^|$|')/<d>/
-    - xform/([a-z>])en(?=^|$|')/$1<f>/
-    - xform/([a-z>])eng(?=^|$|')/$1<g>/
-    - xform/([a-z>])ang(?=^|$|')/$1<h>/
-    - xform/ian(?=^|$|')/<m>/
-    - xform/([a-z>])an(?=^|$|')/$1<j>/
-    - xform/iao(?=^|$|')/<c>/
-    - xform/([a-z>])ao(?=^|$|')/$1<k>/
-    - xform/([a-z>])ai(?=^|$|')/$1<l>/
-    - xform/([a-z>])ei(?=^|$|')/$1<z>/
-    - xform/ie(?=^|$|')/<x>/
-    - xform/ui(?=^|$|')/<v>/
-    - xform/([a-z>])ou(?=^|$|')/$1<b>/
-    - xform/in(?=^|$|')/<n>/
-    - xform/ing(?=^|$|')/;/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])[uv]n(?=^|$|')/<p>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<d>/
+    - xform/(?<![A-Z])([a-z>])en(?=^|$|')/$1<f>/
+    - xform/(?<![A-Z])([a-z>])eng(?=^|$|')/$1<g>/
+    - xform/(?<![A-Z])([a-z>])ang(?=^|$|')/$1<h>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<m>/
+    - xform/(?<![A-Z])([a-z>])an(?=^|$|')/$1<j>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<c>/
+    - xform/(?<![A-Z])([a-z>])ao(?=^|$|')/$1<k>/
+    - xform/(?<![A-Z])([a-z>])ai(?=^|$|')/$1<l>/
+    - xform/(?<![A-Z])([a-z>])ei(?=^|$|')/$1<z>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<x>/
+    - xform/(?<![A-Z])ui(?=^|$|')/<v>/
+    - xform/(?<![A-Z])([a-z>])ou(?=^|$|')/$1<b>/
+    - xform/(?<![A-Z])in(?=^|$|')/<n>/
+    - xform/(?<![A-Z])ing(?=^|$|')/;/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -295,27 +295,27 @@ translator:
     - xform/'sh/'<v>/
     - xform/^([aoe].*)(?=^|$|')/<o>$1/
     - xform/'([aoe].*)(?=^|$|')/'<o>$1/
-    - xform/ei(?=^|$|')/<q>/
-    - xform/ian(?=^|$|')/<w>/
-    - xform/er(?=^|$|')|iu(?=^|$|')/<r>/
-    - xform/[iu]ang(?=^|$|')/<t>/
-    - xform/ing(?=^|$|')/<y>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/uan(?=^|$|')/<p>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<s>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<d>/
-    - xform/en(?=^|$|')/<f>/
-    - xform/eng(?=^|$|')/<g>/
-    - xform/ang(?=^|$|')/<h>/
-    - xform/an(?=^|$|')/<j>/
-    - xform/iao(?=^|$|')/<z>/
-    - xform/ao(?=^|$|')/<k>/
-    - xform/in(?=^|$|')|uai(?=^|$|')/<c>/
-    - xform/ai(?=^|$|')/<l>/
-    - xform/ie(?=^|$|')/<x>/
-    - xform/ou(?=^|$|')/<b>/
-    - xform/un(?=^|$|')/<n>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')|ui(?=^|$|')/<m>/
+    - xform/(?<![A-Z])ei(?=^|$|')/<q>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<w>/
+    - xform/(?<![A-Z])er(?=^|$|')|(?<![A-Z])iu(?=^|$|')/<r>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<t>/
+    - xform/(?<![A-Z])ing(?=^|$|')/<y>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])uan(?=^|$|')/<p>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<d>/
+    - xform/(?<![A-Z])en(?=^|$|')/<f>/
+    - xform/(?<![A-Z])eng(?=^|$|')/<g>/
+    - xform/(?<![A-Z])ang(?=^|$|')/<h>/
+    - xform/(?<![A-Z])an(?=^|$|')/<j>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<z>/
+    - xform/(?<![A-Z])ao(?=^|$|')/<k>/
+    - xform/(?<![A-Z])in(?=^|$|')|(?<![A-Z])uai(?=^|$|')/<c>/
+    - xform/(?<![A-Z])ai(?=^|$|')/<l>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<x>/
+    - xform/(?<![A-Z])ou(?=^|$|')/<b>/
+    - xform/(?<![A-Z])un(?=^|$|')/<n>/
+    - xform/(?<![A-Z])[uv]e(?=^|$|')|(?<![A-Z])ui(?=^|$|')/<m>/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -328,33 +328,33 @@ translator:
     - derive/'([jqxy])u(?=^|$|')/'$1v/
     - xform/'([aoe].*)(?=^|$|')/'<o>$1/
     - xform/^([aoe].*)(?=^|$|')/<o>$1/
-    - xform/en(?=^|$|')/<w>/
-    - xform/eng(?=^|$|')/<t>/
-    - xform/in(?=^|$|')|uai(?=^|$|')/<y>/
+    - xform/(?<![A-Z])en(?=^|$|')/<w>/
+    - xform/(?<![A-Z])eng(?=^|$|')/<t>/
+    - xform/(?<![A-Z])in(?=^|$|')|uai(?=^|$|')/<y>/
     - xform/^zh/<u>/
     - xform/^sh/<i>/
     - xform/'zh/'<u>/
     - xform/'sh/'<i>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/ai(?=^|$|')/<p>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])ai(?=^|$|')/<p>/
     - xform/^ch/<a>/
     - xform/'ch/'<a>/
-    - xform/[iu]ang(?=^|$|')/<g>/
-    - xform/ang(?=^|$|')/<s>/
-    - xform/ie(?=^|$|')/<d>/
-    - xform/ian(?=^|$|')/<f>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<h>/
-    - xform/er(?=^|$|')|iu(?=^|$|')/<j>/
-    - xform/ei(?=^|$|')/<k>/
-    - xform/uan(?=^|$|')/<l>/
-    - xform/ing(?=^|$|')/;/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<g>/
+    - xform/(?<![A-Z])ang(?=^|$|')/<s>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<d>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<f>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<h>/
+    - xform/(?<![A-Z])er(?=^|$|')|iu(?=^|$|')/<j>/
+    - xform/(?<![A-Z])ei(?=^|$|')/<k>/
+    - xform/(?<![A-Z])uan(?=^|$|')/<l>/
+    - xform/(?<![A-Z])ing(?=^|$|')/;/
     - xform/ou(?=^|$|')/<z>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<x>/
-    - xform/iao(?=^|$|')/<b>/
-    - xform/(?<![abcdefghkmprstA-Z])ue(?=^|$|')|ui(?=^|$|')|(?<![abcdefghkmprstA-Z])ve(?=^|$|')/<n>/
-    - xform/un(?=^|$|')/<m>/
-    - xform/ao(?=^|$|')/<q>/
-    - xform/an(?=^|$|')/<r>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<x>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<b>/
+    - xform/(?<![A-Z])ue(?=^|$|')|(?<![A-Z])ui(?=^|$|')|(?<![A-Z])ve(?=^|$|')/<n>/
+    - xform/(?<![A-Z])un(?=^|$|')/<m>/
+    - xform/(?<![A-Z])ao(?=^|$|')/<q>/
+    - xform/(?<![A-Z])an(?=^|$|')/<r>/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
@@ -369,38 +369,37 @@ translator:
     - derive/'([aoe])([ioun])(?=^|$|')/'$1$1$2/
     - xform/^([aoe])(ng)?(?=^|$|')/$1$1$2/
     - xform/'([aoe])(ng)?(?=^|$|')/'$1$1$2/
-    - xform/iu(?=^|$|')/<n>/
-    - xform/(?<![abcefprsA-Z])[iu]a(?=^|$|')/<b>/Add commentMore actions
-    - xform/[uv]an(?=^|$|')/<c>/
-    - xform/(?<![abcdefghkmprstA-Z])[uv]e(?=^|$|')/<x>/
-    - xform/ing(?=^|$|')|er(?=^|$|')/<q>/
+    - xform/(?<![A-Z])iu(?=^|$|')/<n>/
+    - xform/(?<![A-Z])[iu]a(?=^|$|')/<b>/
+    - xform/(?<![A-Z])[uv]an(?=^|$|')/<c>/
+    - xform/(?<![A-Z])[uv]e(?=^|$|')/<x>/
+    - xform/(?<![A-Z])ing(?=^|$|')|(?<![A-Z])er(?=^|$|')/<q>/
     - xform/^sh/<i>/
     - xform/^ch/<u>/
     - xform/^zh/<v>/
     - xform/'sh/'<i>/
     - xform/'ch/'<u>/
     - xform/'zh/'<v>/
-    - xform/uo(?=^|$|')/<o>/
-    - xform/[uv]n(?=^|$|')/<z>/
-    - xform/([a-z>])i?ong(?=^|$|')/$1<y>/
-    - xform/[iu]ang(?=^|$|')/<h>/
-    - xform/([a-z>])en(?=^|$|')/$1<r>/
-    - xform/([a-z>])eng(?=^|$|')/$1<t>/
-    - xform/([a-z>])ang(?=^|$|')/$1<g>/
-    - xform/ian(?=^|$|')/<j>/
-    - xform/([a-z>])an(?=^|$|')/$1<f>/
-    - xform/iao(?=^|$|')/<k>/
-    - xform/([a-z>])ao(?=^|$|')/$1<d>/
-    - xform/([a-z>])ai(?=^|$|')/$1<s>/
-    - xform/([a-z>])ei(?=^|$|')/$1<w>/
-    - xform/ie(?=^|$|')/<m>/
-    - xform/ui(?=^|$|')/<v>/
-    - xform/([a-z>])ou(?=^|$|')/$1<p>/
-    - xform/in(?=^|$|')/<l>/
+    - xform/(?<![A-Z])uo(?=^|$|')/<o>/
+    - xform/(?<![A-Z])[uv]n(?=^|$|')/<z>/
+    - xform/(?<![A-Z])([a-z>])i?ong(?=^|$|')/$1<y>/
+    - xform/(?<![A-Z])[iu]ang(?=^|$|')/<h>/
+    - xform/(?<![A-Z])([a-z>])en(?=^|$|')/$1<r>/
+    - xform/(?<![A-Z])([a-z>])eng(?=^|$|')/$1<t>/
+    - xform/(?<![A-Z])([a-z>])ang(?=^|$|')/$1<g>/
+    - xform/(?<![A-Z])ian(?=^|$|')/<j>/
+    - xform/(?<![A-Z])([a-z>])an(?=^|$|')/$1<f>/
+    - xform/(?<![A-Z])iao(?=^|$|')/<k>/
+    - xform/(?<![A-Z])([a-z>])ao(?=^|$|')/$1<d>/
+    - xform/(?<![A-Z])([a-z>])ai(?=^|$|')/$1<s>/
+    - xform/(?<![A-Z])([a-z>])ei(?=^|$|')/$1<w>/
+    - xform/(?<![A-Z])ie(?=^|$|')/<m>/
+    - xform/(?<![A-Z])ui(?=^|$|')/<v>/
+    - xform/(?<![A-Z])([a-z>])ou(?=^|$|')/$1<p>/
+    - xform/(?<![A-Z])in(?=^|$|')/<l>/
     - xform/'|<|>//
     - derive/^.+$/\L$0/
     - erase/.*[^a-zA-Z].+$/
-
 
   # 前 2~10 个字母大写
   #- derive/^([a-z]{2})/\U$1/
