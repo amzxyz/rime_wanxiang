@@ -1,6 +1,7 @@
 # Rime dictionary
 # encoding: utf-8
-# 挂载英文输入方案的词库
+# 挂载英文输入词库
+#注意，为了配合方案转写逻辑，第二列编码必须首字母大写，与混合词库一起共用
 ---
 name: wanxiang_en
 version: "LTS"
@@ -3284,6 +3285,7 @@ clam	Clam
 clamp	Clamp
 clamps	Clamps
 clan	Clan
+chirp	Chirp
 Clancy	Clancy
 clap	Clap
 Clapton	Clapton
