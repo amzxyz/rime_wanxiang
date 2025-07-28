@@ -21,3 +21,26 @@ $:
         - name: 安装依赖
           script: 
             - echo "Done"
+  tag_push:
+    # 上传二进制包到 release 附件
+    - docker:
+        build: .ide/Dockerfile
+      stages:
+        - name: 更新日志
+          image: cnbcool/changelog
+          settings:
+            day: 60
+          exports:
+            latestChangeLog: LATEST_CHANGE_LOG
+        - name: 创建发布标签
+          type: git:release
+          options:
+            title: latest
+            description: ${LATEST_CHANGE_LOG}
+        - name: 自动分包
+          script: bash .github/workflows/scripts/release-build.sh
+        - name: release 上传附件
+          image: cnbcool/attachments:latest
+          settings:
+            attachments:
+              - ./dist/*.zip
