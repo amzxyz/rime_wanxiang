@@ -1,0 +1,23 @@
+# .cnb.yml
+$:
+  # vscode 事件：专供页面中启动远程开发用
+  vscode:
+    - docker:
+        # 自定义开发环境
+        build:
+          # 指定构建镜像的 Dockerfile 文件
+          dockerfile: .ide/Dockerfile
+          # 用来声明缓存构建过程中依赖的文件列表。
+        volumes:
+          # 缓存文件
+          - node_modules:copy-on-write
+      services:
+        # 声明使用 vscode 服务
+        - vscode
+        # 声明在容器中支持 docker 命令
+        - docker
+      stages:
+        # 环境启动后需要执行的命令
+        - name: 安装依赖
+          script: 
+            - echo "Done"
