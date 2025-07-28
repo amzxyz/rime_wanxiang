@@ -1,5 +1,13 @@
 # Changelog
 
+## [10.0.5](https://github.com/amzxyz/rime_wanxiang/compare/v10.0.4...v10.0.5) (2025-07-28)
+
+
+### 🐛 Bug 修复
+
+* 持续优化中英混输转写，如遇到问题请反馈 ([34725d6](https://github.com/amzxyz/rime_wanxiang/commit/34725d62aefd02855738ba9e3860ec4b7920eaf8))
+* 移除预测功能模块，现阶段数据建设难度大，前端匹配度不高，意义不大，看后续发展 ([2066179](https://github.com/amzxyz/rime_wanxiang/commit/2066179fbe95d89c6c8a2e89c10a248c27c4c7bd))
+
 ## [10.0.4](https://github.com/amzxyz/rime_wanxiang/compare/v10.0.3...v10.0.4) (2025-07-27)
 
 
