@@ -47,8 +47,6 @@ switches:
   - name: super_tips                    #开启后在输入编码后面的提示区显示实时的提示数据，受tips数据库影响，表情、翻译、车牌、符号等对应关系数据，并可实现句号上屏，不开启则默认，影响的是segment.prompt参数，归属：super_tips.lua
     states: [ 提示关, 提示开 ]
     reset: 1
-  - name: prediction                    #开启后输入上屏后继续弹出预测数据候选展示例如输入：你在 ，预测候选： 哪里 干嘛 吗 做等等，predictor配置区可设置详细参数，归属：predict内置插件
-    states: [ 预测关, 预测开 ]
   - name: search_single_char            #多体现在编码重合但候选有单字或者多字的情况辅码查词时是否单字优先，全拼常见，类似于特定编码情况下、反查状态下的调序能力。归属：search.lua
     states: [正常, 单字]
 
@@ -56,7 +54,6 @@ switches:
 # 输入引擎
 engine:
   processors:
-    - predictor                                 #联想处理器，与predictor顶层配置配合
     - chord_composer                            #并击处理器，与置顶参数：是否启用并击，选项配合使用
     - lua_processor@*select_character           #以词定字，默认左中括号上屏一个词的前一个字，右中括号上屏一个词的后一个字
     - lua_processor@*quick_symbol_text          #快符引导以及重复上屏，配合quick_symbol_text顶层配置清单定义扩展按键
@@ -84,7 +81,6 @@ engine:
     - punct_segmentor                           #标识符号段落〔键入标点符号用〕加上 punct 这个 tag
     - fallback_segmentor                        #标识其他未标识段落，必须放在最后帮助tag模式切换后回退重新处理
   translators:
-    - predict_translator                   #预测候选的生成器
     - punct_translator                     #配合 punct_segmentor 转换标点符号
     - script_translator                    #脚本翻译器，用于拼音、粤拼等基于音节表的输入方案
     - lua_translator@*version_display      #输入'/wx'，显示万象项目网址和当前版本号
@@ -116,16 +112,6 @@ engine:
     - lua_filter@*text_formatting                   #给自定义用户词扩展一个换行:\n, 制表符：\t, 回车符：\r, 空格：\s
     - uniquifier                                    # 去重
 
-predictor:
-  db: wanxiang-lts-zh-predict.db
-# 每次最大预测候选数
-# 默认为 0，表示显示所有候选数
-# 您可以将其设置为与 page_size 相同，这样 period 就不会触发下一页
-  max_candidates: 5
-# 最大连续预测次数
-# 默认为 0，表示无限制
-  max_iterations: 1
-  
 #shijian:仅仅作为提示使用，编码已经写死，引导适应性更高，如有需求lua中修改
 #时间：osj 或者 /sj
 #日期：orq 或者 /rq
@@ -379,16 +365,16 @@ key_binder:
     - { when: always, toggle: s2t, accept: Control+Shift+4 }       # 切换简繁
     - { when: always, toggle: s2t, accept: Control+Shift+dollar }  # 切换简繁
 editor:
-   bindings:
-     space: confirm                        # 空格键：上屏候选项
-     Return: commit_raw_input              # 回车键：上屏原始输入
-     Control+Return: commit_script_text    # Ctrl+回车键：上屏变换后输入（经过 preedit转换的）
-     Control+Shift+Return: commit_comment  # Ctrl+Shift+回车键：上屏 comment
-     BackSpace: revert                     # 退格键：向前删除（撤消上次输入）
-     Delete: delete                        # Delete 键：向后删除
-     Control+BackSpace: back_syllable      # Ctrl+退格键：删除一个音节
-     Control+Delete: delete_candidate      # Ctrl+Delete键：删除或降权候选项
-     Escape: cancel                        # Esc 键：取消输入
+  bindings:
+    space: confirm                        # 空格键：上屏候选项
+    Return: commit_raw_input              # 回车键：上屏原始输入
+    Control+Return: commit_script_text    # Ctrl+回车键：上屏变换后输入（经过 preedit转换的）
+    Control+Shift+Return: commit_comment  # Ctrl+Shift+回车键：上屏 comment
+    BackSpace: revert                     # 退格键：向前删除（撤消上次输入）
+    Delete: delete                        # Delete 键：向后删除
+    Control+BackSpace: back_syllable      # Ctrl+退格键：删除一个音节
+    Control+Delete: delete_candidate      # Ctrl+Delete键：删除或降权候选项
+    Escape: cancel                        # Esc 键：取消输入
 
 # 拼写设定
 speller:
