@@ -192,8 +192,8 @@ jobs:
             dist/5-pro-tiger-fuzhu-dicts.zip
             dist/6-pro-wubi-fuzhu-dicts.zip
             dist/7-pro-hanxin-fuzhu-dicts.zip
-            dist/9-base-dicts.zip
             dist/8-pro-all-dicts.zip
+            dist/9-base-dicts.zip
             wanxiang-lts-zh-hans.gram
           draft: false
           prerelease: false
