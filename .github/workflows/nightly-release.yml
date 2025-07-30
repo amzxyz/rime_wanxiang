@@ -6,7 +6,7 @@ on:
     branches:
       - wanxiang
     paths:
-      - 'dicts/**'
+      - "dicts/**"
 
 concurrency: # 防止并发冲突
   group: nightly-release
@@ -42,74 +42,53 @@ jobs:
         with:
           python-version: "3.x"
 
-      # 5. 运行Python 脚本对 zh_dicts_pro 进行处理，生成多个词库文件夹
+      # 5. 运行Python 脚本对 dicts 进行处理，生成多个词库文件夹
       - name: Process Rime dicts
         if: env.SKIP != 'true'
         run: |
           echo "Processing dicts with Python script..."
           pip install --upgrade pip
           python .github/workflows/scripts/万象分包.py
+          echo "Done"
 
-      # 6. 打包指定的 pro dict 文件
-      - name: Pack pro dicts
-        if: env.SKIP != 'true'
-        run: |
-          mkdir -p dist
-          echo "Packing specified pro dicts..."
+          # 处理 all dicts 与 base dicts
+          echo "Processing pro_all dicts and base dicts"
+          mkdir -p pro-all-dicts
+          mkdir -p base-dicts
+          echo "Copy dicts..."
           if [ -d "dicts" ]; then
             cd dicts
-            zip -r ../dist/8-pro-all-dicts.zip \
-              en.dict.yaml \
-              "cn&en.dict.yaml" \
-              chengyu.txt \
-              correlation.pro.dict.yaml \
-              base.pro.dict.yaml \
-              chars.pro.dict.yaml \
-              compatible.pro.dict.yaml \
-              corrections.pro.dict.yaml \
-              place.pro.dict.yaml \
-              poetry.pro.dict.yaml \
-              suggestion.pro.dict.yaml
-            echo "Packing completed: dist/8-pro-all-dicts.zip"
+            cp correlation.pro.dict.yaml \
+               base.pro.dict.yaml \
+               chars.pro.dict.yaml \
+               compatible.pro.dict.yaml \
+               corrections.pro.dict.yaml \
+               place.pro.dict.yaml \
+               poetry.pro.dict.yaml \
+               suggestion.pro.dict.yaml \
+               ../pro-all-dicts
+            cp correlation.dict.yaml \
+               base.dict.yaml \
+               chars.dict.yaml \
+               compatible.dict.yaml \
+               corrections.dict.yaml \
+               place.dict.yaml \
+               poetry.dict.yaml \
+               suggestion.dict.yaml \
+               ../base-dicts
+            echo "Copy File completed"
             cd ..
           else
             echo "Error: dicts folder does not exist."
             exit 1
           fi
 
-      # 7. 打包指定的 base dict 文件
-      - name: Pack base dicts
-        if: env.SKIP != 'true'
-        run: |
-          mkdir -p dist
-          echo "Packing specified base dicts..."
-          if [ -d "dicts" ]; then
-            cd dicts
-            zip -r ../dist/9-base-dicts.zip \
-              en.dict.yaml \
-              "cn&en.dict.yaml" \
-              chengyu.txt \
-              correlation.dict.yaml \
-              base.dict.yaml \
-              chars.dict.yaml \
-              compatible.dict.yaml \
-              corrections.dict.yaml \
-              place.dict.yaml \
-              poetry.dict.yaml \
-              suggestion.dict.yaml
-            echo "Packing completed: dist/9-base-dicts.zip"
-            cd ..
-          else
-            echo "Error: dicts folder does not exist."
-            exit 1
-          fi
-
-      # 8. 将拆分后的 7 个词库文件夹一并打包，并先复制通用文件
+      # 6. 将拆分后的 9 个词库文件夹一并打包，并先复制通用文件
       - name: Pack splitted dicts
         if: env.SKIP != 'true'
         run: |
           echo "Packing splitted dict folders..."
-      
+
           # 定义文件夹 -> ZIP文件名的映射关系
           declare -A dict_map=(
             ["pro-moqi-fuzhu-dicts"]="1-pro-moqi-fuzhu-dicts.zip"
@@ -119,10 +98,12 @@ jobs:
             ["pro-tiger-fuzhu-dicts"]="5-pro-tiger-fuzhu-dicts.zip"
             ["pro-wubi-fuzhu-dicts"]="6-pro-wubi-fuzhu-dicts.zip"
             ["pro-hanxin-fuzhu-dicts"]="7-pro-hanxin-fuzhu-dicts.zip"
+            ["pro-all-dicts"]="8-pro-all-dicts.zip"
+            ["base-dicts"]="9-base-dicts.zip"
           )
-      
+
           mkdir -p dist
-      
+
           # 遍历字典并按指定顺序命名 ZIP 文件
           for dict_dir in "${!dict_map[@]}"; do
             if [ -d "$dict_dir" ]; then
@@ -139,8 +120,7 @@ jobs:
             fi
           done
 
-
-      # 9. 删除旧的 Release 和 Tag
+      # 7. 删除旧的 Release 和 Tag
       - name: Delete existing Nightly Release and Tag
         if: env.SKIP != 'true'
         uses: actions/github-script@v6
@@ -175,7 +155,7 @@ jobs:
               console.log(`Error deleting Release or Tag: ${error.message}`);
             }
 
-      # 10. 等待清理完成
+      # 8. 等待清理完成
       - name: Wait for cleanup
         if: env.SKIP != 'true'
         run: sleep 10
@@ -184,8 +164,8 @@ jobs:
         if: env.SKIP != 'true'
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-      # 11. 创建新的 Release，并把上述打包好的所有文件都上传
+          node-version: "18"
+      # 9. 创建新的 Release，并把上述打包好的所有文件都上传
       - name: Create new Release
         if: env.SKIP != 'true'
         uses: "softprops/action-gh-release@v2"
@@ -205,8 +185,6 @@ jobs:
             - **pro-hanxin-fuzhu-dicts.zip**：携带了汉心辅助码的词库文件
             - **[wanxiang-lts-zh-hans.gram](https://github.com/amzxyz/RIME-LMDG/releases/download/LTS/wanxiang-lts-zh-hans.gram)**：与词库同步更新的语法模型
           files: |
-            dist/9-base-dicts.zip
-            dist/8-pro-all-dicts.zip
             dist/1-pro-moqi-fuzhu-dicts.zip
             dist/2-pro-flypy-fuzhu-dicts.zip
             dist/3-pro-zrm-fuzhu-dicts.zip
@@ -214,6 +192,8 @@ jobs:
             dist/5-pro-tiger-fuzhu-dicts.zip
             dist/6-pro-wubi-fuzhu-dicts.zip
             dist/7-pro-hanxin-fuzhu-dicts.zip
+            dist/9-base-dicts.zip
+            dist/8-pro-all-dicts.zip
             wanxiang-lts-zh-hans.gram
           draft: false
           prerelease: false
