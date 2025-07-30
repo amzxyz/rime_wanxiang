@@ -318,12 +318,12 @@ end
 -- ```
 --
 -- 其中：
--- - 排序项：普通模式为「候选词」，功能模式为「候选索引」（从 0  开始计算）
--- - 位置：
+-- - i 排序项：普通模式为「候选词」，功能模式为「候选索引」（从 0  开始计算）
+-- - p 位置：
 --   - 重置为 `0`
 --   - 置顶为 `1`
 --   - 其他值为移动后的位置。（此种情况只做记录，实际排序按偏移量计算）
--- - 偏移量：前／后移动的偏移量
+-- - o 偏移量：前／后移动的偏移量
 --   - 前移 `<0`
 --   - 后移 `>0`
 --   - 「重置」、「置顶」等非前／后移操作为 `0`
@@ -516,6 +516,7 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
     table.sort(user_adjustment_list, function(a, b) return a.updated_at < b.updated_at end)
 
     -- 恢复至上次调整状态
+    local list_size = #user_adjustment_list
     for i, record in ipairs(user_adjustment_list) do
         local from_position = record.from_position
 
@@ -523,9 +524,16 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
             goto continue_restore
         end
 
-        local to_position = record.offset == 0
-            and record.fixed_position
-            or record.raw_position + record.offset
+        local to_position = record.offset == 0     -- 如果 offset 为 0
+            and record.fixed_position              -- 则使用固定位置
+            or record.raw_position + record.offset -- 否则使用偏移量计算新位置
+
+        -- 有时候词库变动，可能会导致偏移量超出范围，这里需要修正一下
+        if to_position < 1 then
+            to_position = 1
+        elseif to_position > list_size then
+            to_position = list_size
+        end
 
         if from_position == to_position then
             goto continue_restore
@@ -538,7 +546,7 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
         -- 修正后续由于移位导致的 from_position 变动
         local min_position = math.min(from_position, to_position)
         local max_position = math.max(from_position, to_position)
-        for j = i, #user_adjustment_list, 1 do
+        for j = i, list_size, 1 do
             local r = user_adjustment_list[j]
             if min_position <= r.from_position and r.from_position <= max_position then
                 local offset = to_position < from_position and 1 or -1
