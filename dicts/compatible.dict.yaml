@@ -4222,7 +4222,7 @@ sort: by_weight
 黄凤凰	huáng fèng huáng	1
 接住豆	jiē zhù dòu	1
 九重天	jiǔ chóng tiān	560
-两个八	liǎng gè bā	644
+两个八	liǎng gè bā	1
 两个白	liǎng gè bái	1
 两个百	liǎng gè bǎi	1
 两个貝	liǎng gè bèi	1
@@ -4243,7 +4243,7 @@ sort: by_weight
 两个巛	liǎng gè chuān	1
 两个串	liǎng gè chuàn	1
 两个朿	liǎng gè cì	1
-两个大	liǎng gè dà	656
+两个大	liǎng gè dà	1
 两个歹	liǎng gè dǎi	1
 两个呆	liǎng gè dāi	1
 两个東	liǎng gè dōng	1
@@ -4318,7 +4318,7 @@ sort: by_weight
 两个區	liǎng gè qū	1
 两个犬	liǎng gè quǎn	1
 两个夋	liǎng gè qūn	1
-两个人	liǎng gè rén	661
+两个人	liǎng gè rén	1
 两个日	liǎng gè rì	1
 两个入	liǎng gè rù	1
 两个卅	liǎng gè sà	1
@@ -4376,7 +4376,7 @@ sort: by_weight
 两个余	liǎng gè yú	1
 两个予	liǎng gè yǔ	1
 两个禺	liǎng gè yú	1
-两个月	liǎng gè yuè	660
+两个月	liǎng gè yuè	1
 两个曰	liǎng gè yuē	1
 两个真	liǎng gè zhēn	1
 两个止	liǎng gè zhǐ	1
@@ -4427,11 +4427,11 @@ sort: by_weight
 三个加	sān gè jiā	1
 三个介	sān gè jiè	1
 三个金	sān gè jīn	1
-三个九	sān gè jiǔ	635
+三个九	sān gè jiǔ	1
 三个可	sān gè kě	1
 三个客	sān gè kè	1
 三个空	sān gè kōng	1
-三个口	sān gè kǒu	639
+三个口	sān gè kǒu	1
 三个老	sān gè lǎo	1
 三个了	sān gè le	1
 三个雷	sān gè léi	1
@@ -4467,7 +4467,7 @@ sort: by_weight
 三个犬	sān gè quǎn	1
 三个全	sān gè quán	1
 三个𡿨	sān gè quǎn	1
-三个人	sān gè rén	659
+三个人	sān gè rén	1
 三个日	sān gè rì	1
 三个若	sān gè ruò	1
 三个山	sān gè shān	1
@@ -4476,8 +4476,8 @@ sort: by_weight
 三个舍	sān gè shě	1
 三个申	sān gè shēn	1
 三个生	sān gè shēng	1
-三个市	sān gè shì	635
-三个十	sān gè shí	624
+三个市	sān gè shì	1
+三个十	sān gè shí	1
 三个士	sān gè shì	1
 三个石	sān gè shí	1
 三个手	sān gè shǒu	1
@@ -4515,7 +4515,7 @@ sort: by_weight
 三个玉	sān gè yù	1
 三个原	sān gè yuán	1
 三个厡	sān gè yuán	1
-三个月	sān gè yuè	660
+三个月	sān gè yuè	1
 三个雲	sān gè yún	1
 三个爪	sān gè zhǎo	1
 三个止	sān gè zhǐ	1
@@ -4561,7 +4561,7 @@ sort: by_weight
 四个且	sì gè qiě	1
 四个囚	sì gè qiú	1
 四个泉	sì gè quán	1
-四个人	sì gè rén	658
+四个人	sì gè rén	1
 四个日	sì gè rì	1
 四个石	sì gè shí	1
 四个水	sì gè shuǐ	1
@@ -4577,7 +4577,7 @@ sort: by_weight
 四个乂	sì gè yì	1
 四个又	sì gè yòu	1
 四个魚	sì gè yú	1
-四个月	sì gè yuè	658
+四个月	sì gè yuè	1
 四个雲	sì gè yún	1
 四个竹	sì gè zhú	1
 四是四	sì shì sì	1
@@ -4585,24 +4585,24 @@ sort: by_weight
 提锡壶	tí xī hú	1
 听物理	tīng wù lǐ	1
 腿说嘴	tuǐ shuō zuǐ	1
-为一名	wéi yì míng	684
-为一名	wèi yì míng	584
+为一名	wéi yì míng	1
+为一名	wèi yì míng	1
 星映灯	xīng yìng dēng	1
 杨家羊	yáng jiā yáng	1
 硬石头	yìng shí tou	1
 游西湖	yóu xī hú	1
-越长越	yuè cháng yuè	315
-越长大	yuè zhǎng dà	321
-越长越	yuè zhǎng yuè	265
+越长越	yuè cháng yuè	1
+越长大	yuè zhǎng dà	1
+越长越	yuè zhǎng yuè	1
 这是蚕	zhè shì cán	1
 紫瓷盘	zǐ cí pán	1
 紫葡萄	zǐ pú táo	1
 嘴不黑	zuǐ bù hēi	1
 嘴说腿	zuǐ shuō tuǐ	1
 白白的鹅	bái bái de é	1
-便不便宜	biàn bú biàn yí	376
-便宜行事	biàn yí xíng shì	281
-便宜之内	biàn yí zhī nèi	110
+便不便宜	biàn bú biàn yí	1
+便宜行事	biàn yí xíng shì	1
+便宜之内	biàn yí zhī nèi	1
 不剥桔子	bù bō jú zi	1
 不吃桔子	bù chī jú zi	1
 不是字纸	bú shì zì zhǐ	1
@@ -4621,8 +4621,8 @@ sort: by_weight
 勿理物理	wù lǐ wù lǐ	1
 惜乎锡壶	xī hū xī hú	1
 小直摇头	xiǎo zhí yáo tóu	1
-越长越好	yuè cháng yuè hǎo	230
-越长越快	yuè zhǎng yuè kuài	204
+越长越好	yuè cháng yuè hǎo	1
+越长越快	yuè zhǎng yuè kuài	1
 安心唱爱歌	ān xīn chàng ài gē	1
 昂首吸飞蛾	áng shǒu xī fēi é	1
 遨游真快活	áo yóu zhēn kuài huó	1
