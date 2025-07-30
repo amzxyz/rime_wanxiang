@@ -516,7 +516,8 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
     table.sort(user_adjustment_list, function(a, b) return a.updated_at < b.updated_at end)
 
     -- 恢复至上次调整状态
-    local list_size = #user_adjustment_list
+    local candidates_size = #candidates
+    local user_adjustments_count = #user_adjustment_list
     for i, record in ipairs(user_adjustment_list) do
         local from_position = record.from_position
 
@@ -531,8 +532,8 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
         -- 有时候词库变动，可能会导致偏移量超出范围，这里需要修正一下
         if to_position < 1 then
             to_position = 1
-        elseif to_position > list_size then
-            to_position = list_size
+        elseif to_position > candidates_size then
+            to_position = candidates_size
         end
 
         if from_position == to_position then
@@ -546,7 +547,7 @@ local function apply_prev_adjustment(candidates, prev_adjustments)
         -- 修正后续由于移位导致的 from_position 变动
         local min_position = math.min(from_position, to_position)
         local max_position = math.max(from_position, to_position)
-        for j = i, list_size, 1 do
+        for j = i, user_adjustments_count, 1 do
             local r = user_adjustment_list[j]
             if min_position <= r.from_position and r.from_position <= max_position then
                 local offset = to_position < from_position and 1 or -1
