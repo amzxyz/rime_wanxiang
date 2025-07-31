@@ -1,5 +1,12 @@
 # Changelog
 
+## [10.0.7](https://github.com/amzxyz/rime_wanxiang/compare/v10.0.6...v10.0.7) (2025-07-30)
+
+
+### 🐛 Bug 修复
+
+* **sequence:** 排序位置计算错误的问题 ([fe8fe8d](https://github.com/amzxyz/rime_wanxiang/commit/fe8fe8de50abc3cb0c174166b08dc009d324a8cf))
+
 ## [10.0.6](https://github.com/amzxyz/rime_wanxiang/compare/v10.0.5...v10.0.6) (2025-07-30)
 
 
