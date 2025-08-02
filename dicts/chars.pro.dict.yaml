@@ -13898,16 +13898,16 @@ sort: by_weight
 幻	huàn;yv;yv;yg;rr;ia;xn;sv	670
 唤	huàn;kr;kd;kh;oe;dm;kq;kd	601
 焕	huàn;hr;hd;hh;te;cm;oq;hd	553
+涣	huàn;dr;dd;dh;kx;km;iq;dd	547
 桓	huán;md;ma;mg;wd;ef;sg;ld	526
 痪	huàn;br;bd;bh;me;am;uq;bd	509
 歡	huān;cq;cr;qv;;le;ak;	503
+浣	huàn;dy;de;dw;kk;kp;ip;de	500
 嬛	huán;ny;ny;nh,ny;yh;bt;vl;nh	491
 宦	huàn;bi;bi;bi;ir;wq;pa;gi	488
 寰	huán;by;by;bh,by;ih;wt;pl;gh	478
 環	huán;wy;wy;wh,wy;;nt;gl;	471
-浣	huàn;dy;de;dw;kk;kp;ip;de	462
 奂	huàn;dr;dd;dd;gx;xm;qm;ed	453
-涣	huàn;dr;dd;dh;kx;km;iq;dd	442
 換	huàn;fd;fd;fh;;um;rq;	425
 鬟	huán;ey;ay;ih,iy;dh;pt;de;ih	424
 獾	huān;qv;qf;qv,qg;ba;mu;qt;qa	406
@@ -19125,9 +19125,6 @@ sort: by_weight
 𨌶	kēng;io;io;im;;yq;ly;	1
 𨍑	kēng;io;io;iy;;yx;lu;	1
 𫟥	kēng;;ib;;;;;	1
-迲	keop;;zs;;;;;	1
-唟	keos;;tb;;;;;	1
-厼	keum;;sx;;;;;	1
 空	kōng;bg;bg;xg,bg;ip;eu;pw;gg	782
 控	kòng;fg;fg;fk;jp;uu;rp;fg	760
 恐	kǒng;gx;gx;xg;pn;uh;am;gx	687
@@ -31905,7 +31902,6 @@ sort: by_weight
 𩨞	sǎ;gj;gj;gj;;fc;me;	1
 𫂿	sà;;xm;;;;;	1
 挲	sā;du;du;uu;ko;ku;ii;du	1
-栍	saeng;;mu;;;;;	1
 塞	sāi;bt;bt;tb,bt;ig;wg;pf;gt	779
 赛	sài;bb;br;bb;im;wo;pf;gr	685
 塞	sài;bt;bt;tb,bt;ig;wg;pf;gt	532
@@ -32223,7 +32219,6 @@ sort: by_weight
 鬙	sēng;eo;ao;ic;;po;de;	92
 䒏	sēng;bb;bb;sc;;hm;ul;	1
 𡬙	sèng;bd;bd;bz;;wp;pn;	1
-縇	seon;;ya;;;;;	1
 啥	shá;kg;kk;ku;oo;da;kw;kk	728
 杀	shā;xm;xm;mi,im;yf;be;qs;xx	723
 沙	shā;du;du;du;ku;kt;ii;du	686
@@ -51042,6 +51037,11 @@ sort: by_weight
 𫝷	zuò;;gt;;;;;	1
 呒	ḿ;kw;kw;kw;or;dd;kf;kw	1
 呣	ḿ;km;km;km;oh;dk;kx;km	1
+迲	无;;zs;;;;;	1
+唟	无;;tb;;;;;	1
+厼	无;;sx;;;;;	1
+栍	无;;mu;;;;;	1
+縇	无;;ya;;;;;	1
 怾	无;;xb;;;;;	1
 莻	无;	1
 朰	无;	1
