@@ -85,7 +85,7 @@
 ```yaml title="wanxiang.custom.yaml 字符集微调示例"
 patch:
   # 注意：这里会覆盖原有的 charset 列表，请确保保留需要使用的联动开关
-  charset:
+  charset_filter:
     # 1. 主控开关：日常小字集模式
     - option: charset_filter
       base: a            # 调用标签 a（通用规范汉字表）
