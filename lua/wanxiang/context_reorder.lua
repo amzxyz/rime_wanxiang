@@ -50,6 +50,10 @@ local context_state = {
     learn_context2 = nil,
     learn_front = {},
     learn_ready = false,
+    -- 同一上下文读周期内缓存候选的精确 1/2-Gram fetch 结果；不引入 prefix query。
+    score_code1 = nil,
+    score_code2 = nil,
+    score_cache = {},
 }
 
 local REORDER_TYPE_WHITELIST = {
@@ -65,6 +69,12 @@ end
 local function clear_table(t)
     if not t then return end
     for k in pairs(t) do t[k] = nil end
+end
+
+local function clear_context_score_cache()
+    clear_table(context_state.score_cache)
+    context_state.score_code1 = nil
+    context_state.score_code2 = nil
 end
 
 local function clear_learning_snapshot()
@@ -83,6 +93,7 @@ local function reset_context()
     context_state.prev1 = nil
     context_state.last_commit_time = 0
     clear_learning_snapshot()
+    clear_context_score_cache()
 end
 
 local function reset_runtime_state()
@@ -256,11 +267,24 @@ end
 local function get_context_counts_by_code(db, text, code2, code1)
     if not db or not text or text == "" or not code1 then return 0, 0 end
 
+    -- 上下文没变时，同一个候选只精确 fetch 一次；输入码继续增长时直接复用结果。
+    -- code1/code2 变化（通常发生在 commit 后）自动开始新的读周期。
+    if context_state.score_code1 ~= code1 or context_state.score_code2 ~= code2 then
+        clear_context_score_cache()
+        context_state.score_code1 = code1
+        context_state.score_code2 = code2
+    end
+
+    local cached = context_state.score_cache[text]
+    if cached then return cached[1], cached[2] end
+
     local c1 = select(1, fetch_record(db, code1, text))
     local c2 = 0
     if code2 then c2 = select(1, fetch_record(db, code2, text)) end
     if c1 < 0 then c1 = 0 end
     if c2 < 0 then c2 = 0 end
+
+    context_state.score_cache[text] = { c2, c1 }
     return c2, c1
 end
 
@@ -329,6 +353,7 @@ local function rollback_last_commit(env)
     context_state.last_commit_time = env.undo_prev_time or 0
     context_state.after_number = env.undo_after_number == true
     clear_learning_snapshot()
+    clear_context_score_cache()
     clear_undo(env)
     return true
 end
@@ -433,6 +458,9 @@ function P.init(env)
             end
         end
 
+        -- commit 可能刚写过当前上下文记录；无论新旧上下文字符串是否恰好相同，
+        -- 下一轮候选读取都必须重新取一次最新 DB 值。
+        clear_context_score_cache()
         context_state.prev2 = context_state.prev1
         context_state.prev1 = text
         context_state.last_commit_time = current_time
@@ -478,9 +506,10 @@ function P.init(env)
             end
         end)
 
-        -- 当前候选流已经发生删除事件，本轮学习快照作废；
-        -- 下一次 refresh 后 F 会按新候选重新建立。
+        -- 当前候选流已经发生删除事件，本轮学习快照与精确读取缓存同时作废；
+        -- 下一次 refresh 后 F 会按新候选和最新 DB 重新建立。
         clear_learning_snapshot()
+        clear_context_score_cache()
 
         if not ok then
             log.error("context_reorder delete sync error: " .. tostring(err))
