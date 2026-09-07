@@ -120,12 +120,28 @@ local function get_db(env)
     return env.stats_db or acquire_db(env)
 end
 
+local function release_read_accessor(env)
+    env.stats_read_accessor = nil
+end
+
+local function get_read_accessor(env)
+    if env.stats_read_accessor then return env.stats_read_accessor end
+    local db = get_db(env)
+    if not db then return nil end
+
+    -- 报表读取周期只创建一个全库 accessor；不同统计范围通过 jump() 重新定位。
+    local accessor = db:query("")
+    if not accessor then return nil end
+    env.stats_read_accessor = accessor
+    return accessor
+end
+
 -- 不主动 close：底层对象可能被其他组件共享，生命周期交给 userdb 弱池与 C++ 析构。
 local function release_db(env)
+    release_read_accessor(env)
     env.stats_db = nil
 
-    -- DbAccessor 没有显式析构接口。所有局部访问器先置空，再执行一次
-    -- 完整垃圾回收，确保其先于所引用的 LevelDb 释放。
+    -- fini 才做完整 GC；普通报表/写入路径只断开 accessor 引用。
     collectgarbage()
 end
 
@@ -163,22 +179,19 @@ local function parse_tail(tail)
     return to_integer(c)
 end
 
-local function scan_prefix(db, prefix, device_id, handler)
-    local accessor = db:query(prefix)
-    if not accessor then return end
+local function scan_prefix(env, prefix, device_id, handler)
+    local accessor = get_read_accessor(env)
+    if not accessor or not accessor:jump(prefix) then return end
 
-    do
-        for raw_key, tail in accessor:iter() do
-            if raw_key:sub(1, #prefix) ~= prefix then break end
+    for raw_key, tail in accessor:iter() do
+        -- accessor 由 Query("") 创建，统计前缀边界在 Lua 侧显式结束。
+        if raw_key:sub(1, #prefix) ~= prefix then break end
 
-            local key, record_device = parse_raw_key(raw_key)
-            if key and (not device_id or record_device == device_id) then
-                handler(key, record_device, parse_tail(tail), raw_key)
-            end
+        local key, record_device = parse_raw_key(raw_key)
+        if key and (not device_id or record_device == device_id) then
+            handler(key, record_device, parse_tail(tail), raw_key)
         end
     end
-
-    accessor = nil
 end
 
 local function monotonic_ms()
@@ -254,6 +267,8 @@ local function stats_add(env, key, amount)
         return false
     end
 
+    -- DbAccessor 是写入前的读视图；任何统计写入成功后都让报表 accessor 失效。
+    release_read_accessor(env)
     env.write_cache[raw_key] = value
     return true
 end
@@ -477,7 +492,7 @@ local function aggregate_statistics(env, start_day, end_day, device_id,
     if not db then return nil end
     local stats, peaks = new_stats(), {}
 
-    scan_prefix(db, STATISTICS_PREFIX, device_id,
+    scan_prefix(env, STATISTICS_PREFIX, device_id,
         function(key, record_device, value)
         local day, field = key:match("^statistics/day/(%d%d%d%d%d%d%d%d)/(.+)$")
         if not day then return end
@@ -771,6 +786,7 @@ local function init(env)
     env.speed_history_days = bounded_int(config,
         "input_stats/speed_history_days", 30, 1, 365)
     env.stats_db_error = nil
+    env.stats_read_accessor = nil
     env.write_cache = {}
     env.write_cache_day = nil
     env.last_observed_input = ""
@@ -790,7 +806,10 @@ local function init(env)
     }
     acquire_db(env)
     env.stat_notifier = env.engine.context.commit_notifier:connect(
-        function(context) on_commit(context, env) end
+        function(context)
+            release_read_accessor(env)
+            on_commit(context, env)
+        end
     )
 end
 
@@ -824,8 +843,14 @@ local function translator(input, seg, env)
         end
     else
         local history, first, second, empty_message = history_report(input, env)
-        if history == false then return yield_msg(seg, first, second) end
-        if history == nil then return end
+        if history == false then
+            release_read_accessor(env)
+            return yield_msg(seg, first, second)
+        end
+        if history == nil then
+            release_read_accessor(env)
+            return
+        end
         data, title, subtitle = history, first, second
         if not data and env.stats_db_error then
             return yield_msg(seg,
