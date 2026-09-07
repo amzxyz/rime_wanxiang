@@ -703,12 +703,20 @@ local function handle_number_logic(key, env, ctx)
 
         if env.kp_mode == "auto" then
             if env.kp_is_composing then
-                if ctx.push_input then ctx:push_input(ch) else ctx.input = input .. ch end
+                if ctx.push_input then
+                    ctx:push_input(ch)
+                else
+                    ctx.input = input .. ch
+                end
             else
-                env.engine:commit_text(ch)
+                return false
             end
-        else 
-            if ctx.push_input then ctx:push_input(ch) else ctx.input = input .. ch end
+        else
+            if ctx.push_input then
+                ctx:push_input(ch)
+            else
+                ctx.input = input .. ch
+            end
         end
         return true
     end
