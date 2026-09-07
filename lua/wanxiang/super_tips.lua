@@ -179,12 +179,7 @@ local function init_database(config)
         return db
     end
 
-    local cleared
-    if db.clear then
-        cleared = db:clear()
-    else
-        cleared = db:empty(true)
-    end
+    local cleared = db:empty(true)
 
     if cleared == false
         or not load_data_from_files(files, db, disabled_types)
