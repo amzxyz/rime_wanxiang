@@ -213,7 +213,7 @@ Processor 位于输入流程前端，主要负责键盘事件。
 engine:
   processors:
     - lua_processor@*wanxiang.super_processor
-    - lua_processor@*wanxiang.user_predict*P
+    - lua_processor@*wanxiang.context_reorder*P
     - lua_processor@*wanxiang.partial_commit
     - lua_processor@*wanxiang.super_tips
     - lua_processor@*wanxiang.super_sequence*P
@@ -278,7 +278,7 @@ Translator 的职责是：
   translators:
     - punct_translator
     - script_translator
-    - lua_translator@*wanxiang.user_predict*T
+    - lua_translator@*wanxiang.context_reorder*T
     - lua_translator@*wanxiang.version_display
     - lua_translator@*wanxiang.set_schema
     - lua_translator@*wanxiang.shijian
@@ -320,7 +320,7 @@ Translator 的职责是：
     - lua_filter@*wanxiang.super_replacer
     - lua_filter@*wanxiang.super_filter
     - lua_filter@*wanxiang.super_sequence*F
-    - lua_filter@*wanxiang.user_predict*F
+    - lua_filter@*wanxiang.context_reorder*F
     - uniquifier
 ```
 
@@ -353,7 +353,7 @@ Filter 与 Processor 一样，**顺序非常重要**。
 engine:
   processors:
     - lua_processor@*wanxiang.super_processor            # KP 小键盘、字母选词、符号处理、分词等综合按键逻辑
-    - lua_processor@*wanxiang.user_predict*P             # 用户预测相关 Processor
+    - lua_processor@*wanxiang.context_reorder*P             # 用户预测相关 Processor
     - lua_processor@*wanxiang.partial_commit             # Ctrl+1~0 局部提交
     - lua_processor@*wanxiang.super_tips                 # 提示模块
     - lua_processor@*wanxiang.super_sequence*P           # 手动候选排序按键处理
@@ -379,7 +379,7 @@ engine:
   translators:
     - punct_translator
     - script_translator
-    - lua_translator@*wanxiang.user_predict*T
+    - lua_translator@*wanxiang.context_reorder*T
     - lua_translator@*wanxiang.version_display
     - lua_translator@*wanxiang.set_schema
     - lua_translator@*wanxiang.shijian
@@ -403,7 +403,7 @@ engine:
     - lua_filter@*wanxiang.super_replacer
     - lua_filter@*wanxiang.super_filter
     - lua_filter@*wanxiang.super_sequence*F
-    - lua_filter@*wanxiang.user_predict*F
+    - lua_filter@*wanxiang.context_reorder*F
     - uniquifier
 ```
 

@@ -75,7 +75,6 @@ P99=36ms 的按键对应复杂场景（多候选过滤 + 用户预测）。
 | recognizer | 1,837 | 124.3 | 228,427.9 | C++ |
 | *wanxiang.force_upper_aux | 1,964 | 57.4 | 112,793.7 | Lua |
 | *wanxiang.key_binder | 1,791 | 23.5 | 42,040.5 | Lua |
-| *wanxiang.user_predict*P | 1,963 | 17.7 | 34,690.0 | Lua |
 | *wanxiang.super_tips | 1,838 | 10.3 | 18,918.8 | Lua |
 | *wanxiang.partial_commit | 1,844 | 5.3 | 9,849.9 | Lua |
 | (匿名 switcher) | 1,998 | 2.1 | 4,208.3 | C++ |
@@ -94,7 +93,6 @@ P99=36ms 的按键对应复杂场景（多候选过滤 + 用户预测）。
 | *wanxiang.shijian | 813 | 330.2 | 268,425.8 | Lua |
 | *wanxiang.unicode | 813 | 135.0 | 109,734.3 | Lua |
 | *wanxiang.input_statistics | 813 | 134.0 | 108,913.6 | Lua |
-| *wanxiang.user_predict*T | 813 | 122.5 | 99,581.1 | Lua |
 | *wanxiang.number_translator | 813 | 113.8 | 92,481.9 | Lua |
 | wanxiang_english | 813 | 108.5 | 88,181.4 | C++ |
 | *wanxiang.version_display | 813 | 93.7 | 76,178.8 | Lua |
@@ -118,7 +116,6 @@ P99=36ms 的按键对应复杂场景（多候选过滤 + 用户预测）。
 | *wanxiang.charset_filter | 813 | 84.0 | 68,317.1 | Lua |
 | *wanxiang.super_english | 813 | 71.5 | 58,145.1 | Lua |
 | *wanxiang.auto_phrase | 813 | 55.7 | 45,310.7 | Lua |
-| *wanxiang.user_predict*F | 813 | 39.3 | 31,956.7 | Lua |
 | filter (uniquifier/simplifier) | 813 | 2.0 | 1,636.6 | C++ |
 
 ### 3.5 分词器 (Segmentor)
@@ -189,7 +186,6 @@ P99=36ms 的按键对应复杂场景（多候选过滤 + 用户预测）。
 | *wanxiang.force_upper_aux | 112,794 | 1,964 | 57.4 |
 | *wanxiang.unicode | 109,734 | 813 | 135.0 |
 | *wanxiang.input_statistics | 108,914 | 813 | 134.0 |
-| *wanxiang.user_predict*T | 99,581 | 813 | 122.5 |
 | *wanxiang.super_comment_preedit | 98,002 | 813 | 120.5 |
 | *wanxiang.super_lookup | 94,009 | 813 | 115.6 |
 | *wanxiang.number_translator | 92,482 | 813 | 113.8 |
@@ -200,8 +196,6 @@ P99=36ms 的按键对应复杂场景（多候选过滤 + 用户预测）。
 | *wanxiang.auto_phrase | 45,311 | 813 | 55.7 |
 | *wanxiang.key_binder | 42,040 | 1,791 | 23.5 |
 | *wanxiang.set_schema | 35,157 | 813 | 43.2 |
-| *wanxiang.user_predict*P | 34,690 | 1,963 | 17.7 |
-| *wanxiang.user_predict*F | 31,957 | 813 | 39.3 |
 | *wanxiang.super_tips | 18,919 | 1,838 | 10.3 |
 | *wanxiang.partial_commit | 9,850 | 1,844 | 5.3 |
 
@@ -231,7 +225,6 @@ ProcessKey                                       7,739 µs  (100%)
 ├── engine CalcSeg                                 55 µs   ( 1%)  分词
 ├── engine TransSeg                             5,871 µs   (76%)  翻译+过滤
 │   ├── script_translator (C++)                 1,747 µs   (23%)  字典查词
-│   ├── *wanxiang.user_predict*T (Lua)          1,067 µs   (14%)  用户预测
 │   ├── *wanxiang.super_filter (Lua)            1,729 µs   (22%)  候选过滤
 │   ├── *wanxiang.super_replacer (Lua)            336 µs   ( 4%)  替换
 │   ├── *wanxiang.super_comment_preedit (Lua)     138 µs   ( 2%)
@@ -247,7 +240,7 @@ ProcessKey                                       7,739 µs  (100%)
 
 P99 延迟约 36ms，超过部分由偶发尖峰拉高。Top 10 尖峰均为 >49ms。
 
-这些高延迟按键的共同特征：均触发完整 Compose + TransSeg，主翻译器字典查询耗时（script_translator 3-4ms）和 user_predict*T 偶发 >1.5ms 尖峰叠加。同时存在 `set_schema` 偶发尖峰（见 line 432 出现 2505µs，是正常 43µs 的 58 倍）。
+这些高延迟按键的共同特征：均触发完整 Compose + TransSeg，主翻译器字典查询耗时（script_translator 3-4ms）和 同时存在 `set_schema` 偶发尖峰（见 line 432 出现 2505µs，是正常 43µs 的 58 倍）。
 
 ---
 
@@ -269,7 +262,6 @@ P99 延迟约 36ms，超过部分由偶发尖峰拉高。Top 10 尖峰均为 >49
 1. **Lua filter 链长度优化** — 9 个 Lua filter 串行处理每轮候选。`super_filter` (1,280µs) 排最前面，其 yield 等待后续 8 个 filter 完成才继续。考虑合并 `super_sequence*F` (844µs) 和 `super_replacer` (338µs) 入 `super_filter`。
 2. **`super_filter.lua:538` os.date 缓存** — 同一按键内不重复调用系统时间。
 3. **`set_schema` 偶发尖峰排查** — line 432 出现 2,505µs 异常值（正常均值 43µs），可能是配置读取出错重试。
-4. **user_predict*T 偶发尖峰** — 正常均值 122µs，但出现过 >1.6ms，可能是用户词库大规模查重。
 
 ### Lua vs C++ 最终结论
 

@@ -203,27 +203,28 @@ patch:
 
 ---
 
-## 7. 专属预测联想 (user_predict)
+## 7. 上下文调频 (context_reorder)
+
 控制上下文联想数量、词库寿命和特定分类调频。
 
 <div class="grid" markdown>
 
 ```yaml title="左：wanxiang.schema.yaml"
-user_predict:
-  db_name: predict
-  max_candidates: 10
-  expiry_days: 90
+context_reorder:
+  db_name: context_reorder
+  enable_fallback_reorder: false
+  context_timeout: 5000
   custom_classifiers:
-    - 个只名位口头匹条群批伙
+    - 个只名位口人头匹条群批伙多
 ```
 
 ```yaml title="右：wanxiang.custom.yaml"
 patch:
-  # 修改最大候选显示数量
-  user_predict/max_candidates: 5
+  # 启用回退键后再次输入相同编码第一第二候选掉头
+  enable_fallback_reorder: true
   
   # 向量词列表追加新规则
-  user_predict/custom_classifiers/+: 
+  context_reorder/custom_classifiers/+: 
     - "卷幅节堂门帖"
 ```
 

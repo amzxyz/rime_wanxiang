@@ -92,7 +92,7 @@
         * **super_tips.lua** —— `输入提示模块`
         * **unicode.lua** —— `Unicode 编码输入与解析模块`
         * **userdb.lua** —— `用户词库与 LevelDB 操作封装`
-        * **user_predict.lua** —— `N-Gram 用户预测与上下文调频模块`
+        * **context_reorder.lua** —— `N-Gram 上下文调频模块`
         * **version_display.lua** —— `版本与项目信息显示模块`
         * **wanxiang.lua** —— `万象 Lua 公共函数与模块挂载入口`
 
