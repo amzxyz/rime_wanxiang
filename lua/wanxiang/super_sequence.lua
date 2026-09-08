@@ -190,6 +190,8 @@ local function get_sequence_state(env, config)
 end
 
 local function release_read_accessor(state)
+    -- DbAccessor 必须先于 LevelDb 失去引用。
+    -- 这里只解除 accessor 引用，不主动 close 共享 UserDb。
     if state then state.read_accessor = nil end
 end
 
@@ -201,6 +203,9 @@ local function get_read_accessor(state)
     local accessor = state.db:query("")
     if not accessor then return nil end
     state.read_accessor = accessor
+    -- DbAccessor 绑定 sequence_state：
+    -- 保证同一 composition 内候选移动/刷新仍复用同一个读视图。
+    -- 通过 commit、写入成功、fini 主动释放，避免长期持有。
     return accessor
 end
 
@@ -632,12 +637,13 @@ function P.init(env)
         pin = config:get_string("super_sequence/pin") or DEFAULT_SEQ_KEY.pin,
     }
 
-    env.sequence_commit_connection = env.engine.context.commit_notifier:connect(
-        function()
-            local state = env.sequence_state
-            if state then release_read_accessor(state) end
-        end
-    )
+    local state = get_sequence_state(env, config)
+    -- commit/清空 composition 是一个自然读周期边界：释放旧 Iterator，下一词读取最新视图。
+    if state then
+        env.sequence_commit_connection = env.engine.context.commit_notifier:connect(
+            function() release_read_accessor(state) end
+        )
+    end
 end
 
 function P.fini(env)
@@ -767,6 +773,7 @@ function F.init(env)
 
     env.symbol = string.sub(symbol, 1, 1)
     env.page_size = config and config:get_int("menu/page_size") or 5
+    get_sequence_state(env, config)
 end
 
 function F.fini(env)
