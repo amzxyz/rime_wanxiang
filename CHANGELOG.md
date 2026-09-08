@@ -1,5 +1,31 @@
 # Changelog
 
+## [17.9.9](https://github.com/amzxyz/rime-wanxiang/compare/v17.9.8...v17.9.9) (2026-09-08)
+
+
+### 📚 词库更新
+
+* 词库调整 ([85133e1](https://github.com/amzxyz/rime-wanxiang/commit/85133e1e3feadf1876415462f003cfbb3fea1a63))
+* 词库调整 ([02eacfe](https://github.com/amzxyz/rime-wanxiang/commit/02eacfebde8488eab41488fab8b4ce3137176360))
+* 词库调整 ([7757c7e](https://github.com/amzxyz/rime-wanxiang/commit/7757c7ef0de4b4c37e9678e2a42450362edec91f))
+* 词库调整 ([1e09fa2](https://github.com/amzxyz/rime-wanxiang/commit/1e09fa23bbc1ba2857c38a3eab949299b6f95cfd))
+
+
+### 🐛 Bug 修复
+
+* 修复小键盘auto模式下在小狼毫Windows验证码等数字框会形成双重输入的问题 ([97844f1](https://github.com/amzxyz/rime-wanxiang/commit/97844f1ea0c8245dbb7de51fded10a19fe63aa27))
+* 变更sequence数据库持有周期 ([ea20bfc](https://github.com/amzxyz/rime-wanxiang/commit/ea20bfc541af1d647d8ec853f741df902418020e))
+* 多个脚本减少query调用次数和生命周期持有方式 ([7f5ac61](https://github.com/amzxyz/rime-wanxiang/commit/7f5ac61d9123bb798a2b30b47bd13fc251aa0004))
+* 延迟加载 sequence 数据库初始化 ([cfee7a8](https://github.com/amzxyz/rime-wanxiang/commit/cfee7a80553bfa99b72642c7a65b3c85a05c9b2a))
+* 撤销/e17编码，以保障/e可以用1上屏 ([21824dc](https://github.com/amzxyz/rime-wanxiang/commit/21824dcb7ae1473e0ae0e26b737c85784b1ccf86))
+
+
+### 🏡 杂项
+
+* schema_custom.md ([1056ad9](https://github.com/amzxyz/rime-wanxiang/commit/1056ad9c2131813b281121b7023976a87d829cdb))
+* 更新 charset.md ([5a71521](https://github.com/amzxyz/rime-wanxiang/commit/5a71521c8bf874e4c6a05cc9f31d444de8baf921))
+* 群号放置文档末尾 ([60ca37a](https://github.com/amzxyz/rime-wanxiang/commit/60ca37ab2378ddf650a1e10a9f8a436a6b5e9743))
+
 ## [17.9.8](https://github.com/amzxyz/rime-wanxiang/compare/v17.9.7...v17.9.8) (2026-09-05)
 
 
