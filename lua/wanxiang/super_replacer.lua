@@ -50,11 +50,13 @@ local function clear_map(t)
 end
 
 
--- 固定64槽运行缓存。
--- 保持 cache 对象不变，只循环覆盖内容，避免频繁创建 table。
+-- 固定64槽运行缓存：KV 跨 composition 持续保留。
+local CACHE64_SIZE = 64
+
 local function init_cache64()
     return {
-        slots = {},
+        keys = {},
+        values = {},
         lookup = {},
         index = 1,
     }
@@ -66,52 +68,44 @@ local function cache64_get(cache, key)
     local pos = cache.lookup[key]
     if not pos then return nil end
 
-    local item = cache.slots[pos]
-    if item and item.key == key then
-        return item.value
+    if cache.keys[pos] == key then
+        return cache.values[pos]
     end
 
+    -- 防御性清理：正常 ring 覆盖会同步删除旧映射，不应进入这里。
+    cache.lookup[key] = nil
     return nil
 end
 
 local function cache64_put(cache, key, value)
     if not cache or not key then return end
 
-    local index = cache.index
-    local old = cache.slots[index]
-
-    if old then
-        cache.lookup[old.key] = nil
-    end
-
-    cache.slots[index] = {
-        key = key,
-        value = value,
-    }
-
-    cache.lookup[key] = index
-
-    index = index + 1
-    if index > 64 then
-        index = 1
-    end
-
-    cache.index = index
-end
-
--- 清除缓存内容，但不替换 table。
-local function clear_cache64(cache)
-    if not cache then return end
-
-    for key in pairs(cache.lookup) do
+    -- 同一个 K 已在 ring 中时只更新 V，不推动覆盖指针。
+    local existing = cache.lookup[key]
+    if existing and cache.keys[existing] == key then
+        cache.values[existing] = value
+        return
+    elseif existing then
         cache.lookup[key] = nil
     end
 
-    for i = 1, #cache.slots do
-        cache.slots[i] = nil
+    local index = cache.index
+    local old_key = cache.keys[index]
+
+    -- 第65个不同 K 开始覆盖最老槽，并同步移除旧 K -> slot 映射。
+    if old_key ~= nil then
+        cache.lookup[old_key] = nil
     end
 
-    cache.index = 1
+    cache.keys[index] = key
+    cache.values[index] = value
+    cache.lookup[key] = index
+
+    index = index + 1
+    if index > CACHE64_SIZE then
+        index = 1
+    end
+    cache.index = index
 end
 
 -- 清空仅供单次 M.func 使用的工作缓冲；保留 table 本身供下轮复用。
@@ -713,25 +707,10 @@ end
 
 local function release_db(env)
     env.db = nil
-    -- 数据库固定为 build/replacer；这里只释放 Lua 引用，不主动关闭共享底层实例。
     collectgarbage()
 end
 
-local function clear_runtime_cache(env)
-    if not env.runtime_cache_active then return end
-
-    -- 不重新创建 cache table。
-    -- 只清除 ring buffer 内容，保留 slots/lookup 容器，避免 GC 抖动。
-    clear_cache64(env.fetch_cache)
-    clear_cache64(env.fmm_cache)
-
-    env.runtime_cache_active = false
-end
-
--- 运行期缓存只保存 string / false，不保存 Candidate 或数据库遍历对象。
 local function fetch_runtime_aggregate(env, db, key)
-    env.runtime_cache_active = true
-
     local cache = env.fetch_cache
     local cached = cache64_get(cache, key)
     if cached ~= nil then
@@ -809,8 +788,6 @@ end
 -- 简化 FMM：去掉 LRU、链表和 progress 状态机。
 -- 同一 prefix + 文本在一次 composition 内只计算一次完整结果。
 local function convert_sentence_fmm(text, db, rule, env, offsets, result_parts)
-    env.runtime_cache_active = true
-
     local prefix = rule.prefix
     local cache_key = prefix .. "\0" .. text
     local cached = cache64_get(env.fmm_cache, cache_key)
@@ -896,7 +873,6 @@ function M.init(env)
     env.fmm_result_parts = nil
     env.fetch_cache = init_cache64()
     env.fmm_cache = init_cache64()
-    env.runtime_cache_active = false
     env.active_rules = {}
     env.active_abbrev_rules = {}
     env.result_buffer = nil
@@ -1079,36 +1055,13 @@ function M.init(env)
         merged_tasks, scheme_sigs, union_sig = nil, nil, nil
         collectgarbage("collect")
     end
-
-    local context = env.engine and env.engine.context
-    if context then
-        env.replacer_commit_connection = context.commit_notifier:connect(function()
-            clear_runtime_cache(env)
-        end)
-
-        env.replacer_update_connection = context.update_notifier:connect(function(updated_context)
-            if not updated_context:is_composing() or updated_context.input == "" then
-                clear_runtime_cache(env)
-            end
-        end)
-    end
 end
 
 function M.fini(env)
-    if env.replacer_commit_connection then
-        env.replacer_commit_connection:disconnect()
-        env.replacer_commit_connection = nil
-    end
-    if env.replacer_update_connection then
-        env.replacer_update_connection:disconnect()
-        env.replacer_update_connection = nil
-    end
-
     env.fmm_offsets = nil
     env.fmm_result_parts = nil
     env.fetch_cache = nil
     env.fmm_cache = nil
-    env.runtime_cache_active = nil
     env.active_rules = nil
     env.active_abbrev_rules = nil
     env.result_buffer = nil
