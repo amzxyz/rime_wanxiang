@@ -823,6 +823,11 @@ function F.func(input, env)
         return yield_original_list(input, has_symbol, cache_limit, page_cache)
     end
 
+    -- 单个小写字母不参与手动排序；Filter 也直接透传，避免进入 sequence DB 查询。
+    if is_single_lowercase_letter(adjust_code) then
+        return yield_original_list(input, has_symbol, cache_limit, page_cache)
+    end
+
     local state = get_sequence_state(env)
     if not state then
         return yield_original_list(input, has_symbol, cache_limit, page_cache)
