@@ -1198,11 +1198,39 @@ local function check_direct_match(raw_data, clean_fuma, fuma1, fuma2, data_sourc
     return false
 end
 
-local function make_direct_candidate(source, ctx_input, pure_code, fuma)
-    local cand = Candidate(source.type, source.start, #ctx_input, source.text, source.comment or "")
-    cand.quality = (source.quality or 0) + 100
-    cand.preedit = source.preedit and source.preedit ~= ""
-        and source.preedit:gsub("%s+$", "") .. " " .. fuma
+-- 直辅缓存使用扁平字段快照，避免为上一输入的每个两字候选长期持有 Candidate userdata。
+local DIRECT_RECORD_STRIDE = 6
+local DR_TYPE = 1
+local DR_START = 2
+local DR_TEXT = 3
+local DR_COMMENT = 4
+local DR_QUALITY = 5
+local DR_PREEDIT = 6
+
+local function append_direct_record(records, count, cand)
+    local base = count * DIRECT_RECORD_STRIDE
+    records[base + DR_TYPE] = cand.type or ""
+    records[base + DR_START] = cand.start or 0
+    records[base + DR_TEXT] = cand.text or ""
+    records[base + DR_COMMENT] = cand.comment or ""
+    records[base + DR_QUALITY] = cand.quality or 0
+    records[base + DR_PREEDIT] = cand.preedit or ""
+    return count + 1
+end
+
+local function make_direct_candidate(records, base, ctx_input, pure_code, fuma)
+    local cand = Candidate(
+        records[base + DR_TYPE],
+        records[base + DR_START],
+        #ctx_input,
+        records[base + DR_TEXT],
+        records[base + DR_COMMENT]
+    )
+    cand.quality = (records[base + DR_QUALITY] or 0) + 100
+
+    local preedit = records[base + DR_PREEDIT] or ""
+    cand.preedit = preedit ~= ""
+        and preedit:gsub("%s+$", "") .. " " .. fuma
         or pure_code .. " " .. fuma
     return cand
 end
@@ -1403,7 +1431,8 @@ local function handle_direct_mode(input, env, ctx_input)
 
     local first_seen = false
     local mode = nil
-    local cache_candidates = nil
+    local cache_records = nil
+    local cache_count = 0
     local cache_state = nil
     local cache_open = false
 
@@ -1421,17 +1450,22 @@ local function handle_direct_mode(input, env, ctx_input)
         if #clean_fuma ~= 1 and #clean_fuma ~= 2 then return end
         local fuma1, fuma2 = clean_fuma:sub(1, 1), clean_fuma:sub(2, 2)
 
-        local source_candidates = direct_cache and direct_cache.candidates
-        if not source_candidates then return end
+        local source_records = direct_cache and direct_cache.records
+        local source_count = direct_cache and direct_cache.count or 0
+        if not source_records or source_count <= 0 then return end
         if not raw_scratch then raw_scratch = {} end
 
-        for i = 1, #source_candidates do
-            local source = source_candidates[i]
-            local raw_data = build_raw_data(source.text, source.comment or "", 2, env, raw_scratch)
+        for i = 1, source_count do
+            local base = (i - 1) * DIRECT_RECORD_STRIDE
+            local source_text = source_records[base + DR_TEXT]
+            local source_comment = source_records[base + DR_COMMENT] or ""
+            local raw_data = build_raw_data(source_text, source_comment, 2, env, raw_scratch)
+
             if check_direct_match(raw_data, clean_fuma, fuma1, fuma2, env.data_sources) then
                 if not matched_candidates then matched_candidates = {}; matched_text_count = {} end
-                matched_candidates[#matched_candidates + 1] = make_direct_candidate(source, ctx_input, base_input, fuma)
-                matched_text_count[source.text] = (matched_text_count[source.text] or 0) + 1
+                matched_candidates[#matched_candidates + 1] =
+                    make_direct_candidate(source_records, base, ctx_input, base_input, fuma)
+                matched_text_count[source_text] = (matched_text_count[source_text] or 0) + 1
             end
         end
     end
@@ -1467,8 +1501,14 @@ local function handle_direct_mode(input, env, ctx_input)
                 build_matches()
             elseif cand_len == 2 and cand._end == #ctx_input then
                 mode = "cache"
-                cache_candidates = {}
-                cache_state = { input = ctx_input, candidates = cache_candidates, active = false }
+                cache_records = {}
+                cache_count = 0
+                cache_state = {
+                    input = ctx_input,
+                    records = cache_records,
+                    count = 0,
+                    active = false,
+                }
                 env.direct_cache = cache_state
                 direct_cache = cache_state
                 cache_open = true
@@ -1482,7 +1522,8 @@ local function handle_direct_mode(input, env, ctx_input)
             if cache_open and cand_len == 2 then
                 local first_byte = string.byte(cand.text, 1)
                 if cand.type ~= "sentence" and (not first_byte or first_byte >= 128) and cand._end == #ctx_input then
-                    cache_candidates[#cache_candidates + 1] = copy_candidate(cand)
+                    cache_count = append_direct_record(cache_records, cache_count, cand)
+                    cache_state.count = cache_count
                 end
             else
                 cache_open = false
@@ -1512,9 +1553,10 @@ local function handle_direct_mode(input, env, ctx_input)
     end
 
     if mode == "cache" then
-        if not cache_candidates or #cache_candidates == 0 then
+        if not cache_records or cache_count == 0 then
             env.direct_cache = nil
         elseif env.direct_cache ~= cache_state then
+            cache_state.count = cache_count
             env.direct_cache = cache_state
         end
     elseif mode == "lookup" and matched_candidates and #matched_candidates > 0
@@ -1707,8 +1749,9 @@ function f.func(input, env)
             return
         end
         local direct_cache = env.direct_cache
-        local direct_candidates = direct_cache and direct_cache.candidates
-        local first_start = direct_candidates and direct_candidates[1] and direct_candidates[1].start
+        local direct_records = direct_cache and direct_cache.records
+        local first_start = direct_records and direct_cache.count and direct_cache.count > 0
+            and direct_records[DR_START] or nil
         if first_start ~= nil and first_start ~= seg.start then
             env.direct_cache = nil
             for cand in input:iter() do yield(cand) end
