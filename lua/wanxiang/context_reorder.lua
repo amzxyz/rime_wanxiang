@@ -50,12 +50,10 @@ local context_state = {
     learn_context2 = nil,
     learn_front = {},
     learn_ready = false,
-    -- 同一上下文读周期内缓存候选的精确 1/2-Gram fetch 结果；
-    -- c1/c2 分表保存，避免每个新候选都创建 {c2, c1} 小表。
+    -- 同一上下文读周期内缓存候选的精确 1/2-Gram fetch 结果；不引入 prefix query。
     score_code1 = nil,
     score_code2 = nil,
-    score_c1_cache = {},
-    score_c2_cache = {},
+    score_cache = {},
 }
 
 local REORDER_TYPE_WHITELIST = {
@@ -74,8 +72,7 @@ local function clear_table(t)
 end
 
 local function clear_context_score_cache()
-    clear_table(context_state.score_c1_cache)
-    clear_table(context_state.score_c2_cache)
+    clear_table(context_state.score_cache)
     context_state.score_code1 = nil
     context_state.score_code2 = nil
 end
@@ -278,10 +275,8 @@ local function get_context_counts_by_code(db, text, code2, code1)
         context_state.score_code2 = code2
     end
 
-    local cached_c1 = context_state.score_c1_cache[text]
-    if cached_c1 ~= nil then
-        return context_state.score_c2_cache[text] or 0, cached_c1
-    end
+    local cached = context_state.score_cache[text]
+    if cached then return cached[1], cached[2] end
 
     local c1 = select(1, fetch_record(db, code1, text))
     local c2 = 0
@@ -289,8 +284,7 @@ local function get_context_counts_by_code(db, text, code2, code1)
     if c1 < 0 then c1 = 0 end
     if c2 < 0 then c2 = 0 end
 
-    context_state.score_c1_cache[text] = c1
-    context_state.score_c2_cache[text] = c2
+    context_state.score_cache[text] = { c2, c1 }
     return c2, c1
 end
 
@@ -640,18 +634,8 @@ local function protect_first_candidate(cand)
     return false
 end
 
--- 每次 LuaFilter::Apply 都运行在独立 coroutine 中，因此这里的候选工作区必须属于
--- 当前 invocation，不能放进共享 env。用单个扁平 rows 表替代最多 50 个 entry 子表。
-local ROW_STRIDE = 5
-local ROW_CAND = 1
-local ROW_C2 = 2
-local ROW_C1 = 3
-local ROW_CLASSIFIER = 4
-local ROW_TIER = 5
-
 local function collect_scored_prefix(next_candidate, db, code2, code1, classifier_mode, limit, target_end)
-    local rows = {}
-    local count = 0
+    local entries = {}
     local boundary_cand = nil
     local first_classifier = nil
     local first_tier = nil
@@ -659,12 +643,12 @@ local function collect_scored_prefix(next_candidate, db, code2, code1, classifie
     local first_c1 = nil
     local needs_sort = false
 
-    while count < limit do
+    while #entries < limit do
         local cand = next_candidate()
         if not cand then break end
 
         local cand_type = cand.type or ""
-        if count == 0 then
+        if #entries == 0 then
             if not REORDER_TYPE_WHITELIST[cand_type]
                 or (target_end ~= nil and cand._end ~= target_end)
             then
@@ -679,9 +663,9 @@ local function collect_scored_prefix(next_candidate, db, code2, code1, classifie
 
         local text = cand.text or ""
         local c2, c1 = get_context_counts_by_code(db, text, code2, code1)
-        local classifier = classifier_mode and CLASSIFIER_LOOKUP[text] == true or false
+        local classifier = classifier_mode and CLASSIFIER_LOOKUP[text] or false
         local tier = c2 > 0 and 2 or (c1 > 0 and 1 or 0)
-        local index = count + 1
+        local index = #entries + 1
 
         if index == 1 then
             first_classifier = classifier
@@ -697,51 +681,30 @@ local function collect_scored_prefix(next_candidate, db, code2, code1, classifie
             needs_sort = true
         end
 
-        local base = (index - 1) * ROW_STRIDE
-        rows[base + ROW_CAND] = cand
-        rows[base + ROW_C2] = c2
-        rows[base + ROW_C1] = c1
-        rows[base + ROW_CLASSIFIER] = classifier
-        rows[base + ROW_TIER] = tier
-        count = index
-
+        entries[index] = {
+            cand = cand,
+            c2 = c2,
+            c1 = c1,
+            classifier = classifier,
+            tier = tier,
+            raw_index = index,
+        }
         remember_snapshot_candidate(text, c2 > 0 or c1 > 0)
     end
 
-    return rows, count, boundary_cand, needs_sort
+    return entries, boundary_cand, needs_sort
 end
 
-local function sort_scored_prefix(rows, count, classifier_mode)
-    -- order 只在确实存在排序差异时创建；候选与分数字段仍只存在于一个扁平 rows 表。
-    local order = {}
-    for i = 1, count do order[i] = i end
-
-    sort(order, function(ai, bi)
-        local a = (ai - 1) * ROW_STRIDE
-        local b = (bi - 1) * ROW_STRIDE
-
-        if classifier_mode then
-            local ac = rows[a + ROW_CLASSIFIER]
-            local bc = rows[b + ROW_CLASSIFIER]
-            if ac ~= bc then return ac end
+local function sort_scored_prefix(entries, classifier_mode)
+    sort(entries, function(a, b)
+        if classifier_mode and a.classifier ~= b.classifier then
+            return a.classifier
         end
-
-        local av = rows[a + ROW_TIER]
-        local bv = rows[b + ROW_TIER]
-        if av ~= bv then return av > bv end
-
-        av = rows[a + ROW_C2]
-        bv = rows[b + ROW_C2]
-        if av ~= bv then return av > bv end
-
-        av = rows[a + ROW_C1]
-        bv = rows[b + ROW_C1]
-        if av ~= bv then return av > bv end
-
-        return ai < bi
+        if a.tier ~= b.tier then return a.tier > b.tier end
+        if a.c2 ~= b.c2 then return a.c2 > b.c2 end
+        if a.c1 ~= b.c1 then return a.c1 > b.c1 end
+        return a.raw_index < b.raw_index
     end)
-
-    return order
 end
 
 function F.func(input, env)
@@ -838,30 +801,13 @@ function F.func(input, env)
         end
     end
 
-    local rows, entry_count, boundary_cand, needs_sort = collect_scored_prefix(
+    local entries, boundary_cand, needs_sort = collect_scored_prefix(
         next_candidate, db, code2, code1, do_classifier, scan_limit, target_end
     )
-    local order = needs_sort and sort_scored_prefix(rows, entry_count, do_classifier) or nil
-
-    if entry_count > 0 then
-        local first_index = order and order[1] or 1
-        local first_base = (first_index - 1) * ROW_STRIDE
-        local first_cand = rows[first_base + ROW_CAND]
-        mark_learning_front(first_cand and first_cand.text or "")
-    end
-
+    if needs_sort then sort_scored_prefix(entries, do_classifier) end
+    if entries[1] then mark_learning_front(entries[1].cand.text or "") end
     if protected_first and not yielded_first then yield(first) end
-    if order then
-        for i = 1, entry_count do
-            local base = (order[i] - 1) * ROW_STRIDE
-            yield(rows[base + ROW_CAND])
-        end
-    else
-        for i = 1, entry_count do
-            local base = (i - 1) * ROW_STRIDE
-            yield(rows[base + ROW_CAND])
-        end
-    end
+    for i = 1, #entries do yield(entries[i].cand) end
     if boundary_cand then yield(boundary_cand) end
     while true do local cand = next_candidate(); if not cand then break end; yield(cand) end
 end
