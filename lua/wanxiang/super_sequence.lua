@@ -177,9 +177,6 @@ local function get_sequence_state(env, config)
         state = {
             db = db, cache = {},
             cache_size = 0, cache_clock = 0,
-            -- 一个输入周期只持有一个全库 DbAccessor；具体编码通过 jump() 定位。
-            -- DbAccessor 的底层 Iterator 是创建时的读视图，DB 写入/提交边界必须作废。
-            read_accessor = nil,
         }
         SEQUENCE_STATES[db_name] = state
     end
@@ -189,42 +186,15 @@ local function get_sequence_state(env, config)
     return state
 end
 
-local function release_read_accessor(state)
-    -- DbAccessor 必须先于 LevelDb 失去引用。
-    -- 这里只解除 accessor 引用，不主动 close 共享 UserDb。
-    if state then state.read_accessor = nil end
-end
-
-local function get_read_accessor(state)
-    if not state or not state.db then return nil end
-    if state.read_accessor then return state.read_accessor end
-
-    -- 必须 Query("")：只有空前缀 accessor 才能在同一 Iterator 上 jump 到任意编码。
-    local accessor = state.db:query("")
-    if not accessor then return nil end
-    state.read_accessor = accessor
-    -- DbAccessor 绑定 sequence_state：
-    -- 保证同一 composition 内候选移动/刷新仍复用同一个读视图。
-    -- 通过 commit、写入成功、fini 主动释放，避免长期持有。
-    return accessor
-end
-
 local function release_sequence_state(env)
     if not env then return end
-    local state = env.sequence_state
-    release_read_accessor(state)
     env.sequence_state = nil
     env.sequence_db_name = nil
-
-    -- fini 才做完整 GC；热路径只断开 accessor 引用，避免人为制造停顿。
     collectgarbage()
 end
 
 local function invalidate_input_cache(state, input)
     if not state then return end
-
-    -- 缓存失效意味着下一次读取必须观察最新 UserDb 视图；旧 Iterator 同时作废。
-    release_read_accessor(state)
 
     if input then
         if state.cache[input] then
@@ -276,18 +246,13 @@ local function load_input_records(state, input)
     local active_count = 0
     local prefix = input .. RECORD_SEPARATOR
     local prefix_len = #prefix
-    local accessor = get_read_accessor(state)
+    local accessor = state.db:query(prefix)
 
-    -- 同一 composition 内复用一个 Iterator；每个编码只做 Seek，不再反复 NewIterator。
-    if accessor and accessor:jump(prefix) then
+    if accessor then
         for raw_key, tail in accessor:iter() do
-            -- accessor 由 Query("") 创建，因此 prefix 边界必须由这里显式截断。
             if raw_key:find(prefix, 1, true) ~= 1 then break end
 
             local item = raw_key:sub(prefix_len + 1)
-
-            -- 旧格式 value 会以 i=... 开头；它已经迁移并写成墓碑，
-            -- 不再进入新的候选位置表。
             if item and item ~= "" and not item:match("^i=.- p=") then
                 local commits, tick = parse_record_tail(tail)
                 local version, position, active = decode_state(commits)
@@ -304,6 +269,8 @@ local function load_input_records(state, input)
             end
         end
     end
+
+    accessor = nil
 
     cached = {
         records = records,
@@ -360,8 +327,6 @@ local function write_active_position(state, input, item, position, records)
     local tail = make_record_tail(commits, tick)
     if not tail or not state.db:update(raw_key, tail) then return false end
 
-    -- Iterator 是写入前的读视图；写成功后立即作废，下一次需要 DB 时重建。
-    release_read_accessor(state)
     update_cached_record(state, input, item, commits, tick)
     records[item] = state.cache[input]
         and state.cache[input].records[item]
@@ -388,8 +353,6 @@ local function write_reset_tombstone(state, input, item, records)
     local tail = make_record_tail(commits, record.tick)
     if not tail or not state.db:update(raw_key, tail) then return false end
 
-    -- Reset 同样改变 UserDb 读视图，不能继续复用旧 Iterator。
-    release_read_accessor(state)
     update_cached_record(state, input, item, commits, record.tick)
     records[item] = state.cache[input]
         and state.cache[input].records[item]
@@ -637,20 +600,10 @@ function P.init(env)
         pin = config:get_string("super_sequence/pin") or DEFAULT_SEQ_KEY.pin,
     }
 
-    local state = get_sequence_state(env, config)
-    -- commit/清空 composition 是一个自然读周期边界：释放旧 Iterator，下一词读取最新视图。
-    if state then
-        env.sequence_commit_connection = env.engine.context.commit_notifier:connect(
-            function() release_read_accessor(state) end
-        )
-    end
+    get_sequence_state(env, config)
 end
 
 function P.fini(env)
-    if env.sequence_commit_connection then
-        env.sequence_commit_connection:disconnect()
-        env.sequence_commit_connection = nil
-    end
     env.seq_keys = nil
     release_sequence_state(env)
 end
@@ -813,13 +766,11 @@ function F.func(input, env)
 
     if wanxiang.is_function_mode(context) then
         curr_state.reset()
-        release_read_accessor(get_sequence_state(env))
         return yield_original_list(input, has_symbol, cache_limit, page_cache)
     end
 
     local adjust_code = context.input:sub(1, context.caret_pos)
     if adjust_code == "" then
-        release_read_accessor(get_sequence_state(env))
         return yield_original_list(input, has_symbol, cache_limit, page_cache)
     end
 
