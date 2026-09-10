@@ -801,6 +801,11 @@ local function convert_sentence_fmm(text, db, rule, env, offsets, result_parts)
     local char_count = get_utf8_offsets(text, offsets)
     clear_array(result_parts)
 
+    -- FMM 的 1/2/3 字精确查询同样遵守词库实际源 key 的字节长度范围。
+    -- min/max 为 0 时视为未知，保守允许查询，避免元数据异常改变匹配结果。
+    local min_source_bytes = rule.min_source_bytes or 0
+    local max_source_bytes = rule.max_source_bytes or 0
+
     local i, result_count = 1, 0
 
     while i <= char_count do
@@ -815,7 +820,12 @@ local function convert_sentence_fmm(text, db, rule, env, offsets, result_parts)
             output = source
         elseif rule.single_char_only then
             source = s_sub(text, start_byte, offsets[i + 1] - 1)
-            local value = fetch_runtime_aggregate(env, db, prefix .. source)
+            local source_bytes = #source
+            local length_allowed =
+                (min_source_bytes == 0 or source_bytes >= min_source_bytes)
+                and (max_source_bytes == 0 or source_bytes <= max_source_bytes)
+            local value = length_allowed
+                and fetch_runtime_aggregate(env, db, prefix .. source) or nil
             output = first_value(value) or source
         else
             if i + FMM_LONG_MIN_CHARS - 1 <= char_count then
@@ -832,27 +842,42 @@ local function convert_sentence_fmm(text, db, rule, env, offsets, result_parts)
 
             if not output and i + 2 <= char_count then
                 local triple = s_sub(text, start_byte, offsets[i + 3] - 1)
-                local value = fetch_runtime_aggregate(env, db, prefix .. triple)
-                if value then
-                    source = triple
-                    output = first_value(value) or source
-                    step = 3
+                local source_bytes = #triple
+                if (min_source_bytes == 0 or source_bytes >= min_source_bytes)
+                    and (max_source_bytes == 0 or source_bytes <= max_source_bytes)
+                then
+                    local value = fetch_runtime_aggregate(env, db, prefix .. triple)
+                    if value then
+                        source = triple
+                        output = first_value(value) or source
+                        step = 3
+                    end
                 end
             end
 
             if not output and i + 1 <= char_count then
                 local pair = s_sub(text, start_byte, offsets[i + 2] - 1)
-                local value = fetch_runtime_aggregate(env, db, prefix .. pair)
-                if value then
-                    source = pair
-                    output = first_value(value) or source
-                    step = 2
+                local source_bytes = #pair
+                if (min_source_bytes == 0 or source_bytes >= min_source_bytes)
+                    and (max_source_bytes == 0 or source_bytes <= max_source_bytes)
+                then
+                    local value = fetch_runtime_aggregate(env, db, prefix .. pair)
+                    if value then
+                        source = pair
+                        output = first_value(value) or source
+                        step = 2
+                    end
                 end
             end
 
             if not output then
                 source = s_sub(text, start_byte, offsets[i + 1] - 1)
-                local value = fetch_runtime_aggregate(env, db, prefix .. source)
+                local source_bytes = #source
+                local length_allowed =
+                    (min_source_bytes == 0 or source_bytes >= min_source_bytes)
+                    and (max_source_bytes == 0 or source_bytes <= max_source_bytes)
+                local value = length_allowed
+                    and fetch_runtime_aggregate(env, db, prefix .. source) or nil
                 output = first_value(value) or source
             end
         end
@@ -1179,7 +1204,19 @@ function M.func(input, env)
             local is_multi = nil
             local exact_allowed = true
 
-            if rule.single_char_only then
+            -- 热路径长度裁剪：prefix profile 记录的是源 key 的字节长度范围。
+            -- 超出范围时完整 key 必然不存在，直接跳过同步 db:fetch()；
+            -- sentence 规则仍会继续进入 FMM，不改变分词/替换结果。
+            local query_len = #query_text
+            local min_len = rule.min_source_bytes or 0
+            local max_len = rule.max_source_bytes or 0
+            if (min_len > 0 and query_len < min_len)
+                or (max_len > 0 and query_len > max_len)
+            then
+                exact_allowed = false
+            end
+
+            if exact_allowed and rule.single_char_only then
                 is_multi = has_multiple_utf8_chars(query_text)
                 if is_multi then exact_allowed = false end
             end
