@@ -1656,6 +1656,40 @@ local function iso_week_number(year, month, day)
     local week_number = math.floor((gregorian_ordinal(ty, tm, td) - gregorian_ordinal(wy, wm, wd)) / 7) + 1
     return iso_year, week_number
 end
+
+local function human_relative_date(year, month, day)
+    local now = os.date("*t")
+    local today_ordinal = gregorian_ordinal(now.year, now.month, now.day)
+    local target_ordinal = gregorian_ordinal(year, month, day)
+    local diff = target_ordinal - today_ordinal
+
+    local day_text
+    if diff == 0 then
+        day_text = "今天"
+    elseif diff > 0 then
+        day_text = tostring(diff) .. "天后"
+    else
+        day_text = tostring(-diff) .. "天前"
+    end
+
+    local today_weekday = gregorian_weekday_iso(now.year, now.month, now.day)
+    local target_weekday = gregorian_weekday_iso(year, month, day)
+    local today_week_start = today_ordinal - today_weekday + 1
+    local target_week_start = target_ordinal - target_weekday + 1
+    local week_delta = target_week_start - today_week_start
+    local weekday_names = { "一", "二", "三", "四", "五", "六", "日" }
+    local week_text
+
+    if week_delta == -7 then
+        week_text = "上周" .. weekday_names[target_weekday]
+    elseif week_delta == 0 then
+        week_text = "本周" .. weekday_names[target_weekday]
+    elseif week_delta == 7 then
+        week_text = "下周" .. weekday_names[target_weekday]
+    end
+
+    return day_text, week_text
+end
 -- 日期格式化函数，用于自定义日期格式。N20150101和/rq使用，自定义时间/sj /dt
 -- 转义规则：
 --   \X       —— 将 X 按字面量输出（X 为任意单个字符，如 Y/m/d/H/M/S 等）
@@ -1982,6 +2016,44 @@ function get_sanfu_info(yyyymmdd)
     return cache[yyyymmdd]
 end
 --三伏天计算结束
+
+--数九天计算
+function get_shujiu_info(yyyymmdd)
+    yyyymmdd = tostring(yyyymmdd or "")
+    if #yyyymmdd < 8 then return nil end
+
+    local year = tonumber(yyyymmdd:sub(1, 4))
+    local month = tonumber(yyyymmdd:sub(5, 6))
+    local day = tonumber(yyyymmdd:sub(7, 8))
+    if not is_valid_gregorian_date(year, month, day) then return nil end
+
+    local names = { "一九", "二九", "三九", "四九", "五九", "六九", "七九", "八九", "九九" }
+
+    local function get_dongzhi(target_year)
+        for _, record in ipairs(build_jieqi_cycle(target_year)) do
+            if record.name == "冬至" then
+                return record.ymd
+            end
+        end
+        return nil
+    end
+
+    local dongzhi = get_dongzhi(year)
+    if not dongzhi then return nil end
+
+    local diff = days_between_gregorian(dongzhi, yyyymmdd)
+    if diff < 0 then
+        dongzhi = get_dongzhi(year - 1)
+        if not dongzhi then return nil end
+        diff = days_between_gregorian(dongzhi, yyyymmdd)
+    end
+
+    if diff < 0 or diff > 80 then return nil end
+
+    local nine_index = math.floor(diff / 9) + 1
+    local day_index = diff % 9 + 1
+    return string.format("%s(%d)", names[nine_index], day_index)
+end
 
 -- 万象修改的新的农历倒计时模块
 -- 传统节日直接使用结构化农历转换结果，不再扫描公历月份、不再从中文字符串反解“闰月”。
@@ -2402,15 +2474,34 @@ local function translator(input, seg, env)
         local len = #n
         local only_digits = (n:match("^%d*$") ~= nil)
         local ndate_mode  = (only_digits and len >= 1 and len <= 8)
+        local diff_left, diff_right = n:match("^(%d%d%d%d%d%d%d%d)%-(%d*)$")
+        local date_diff_mode = diff_left ~= nil and #diff_right <= 8
         local handled = false
 
-        if ndate_mode then
+        if ndate_mode or date_diff_mode then
             segment.tags = segment.tags + Set({ "shijian" })
         else
             segment.tags = segment.tags - Set({ "shijian" })
         end
 
-        if ndate_mode then
+        if date_diff_mode then
+            handled = true
+            set_segment_prompt(context, "")
+
+            if #diff_right == 8 then
+                local y1, m1, d1 = tonumber(diff_left:sub(1, 4)), tonumber(diff_left:sub(5, 6)), tonumber(diff_left:sub(7, 8))
+                local y2, m2, d2 = tonumber(diff_right:sub(1, 4)), tonumber(diff_right:sub(5, 6)), tonumber(diff_right:sub(7, 8))
+
+                if is_valid_gregorian_date(y1, m1, d1) and is_valid_gregorian_date(y2, m2, d2) then
+                    local diff = math.abs(gregorian_ordinal(y2, m2, d2) - gregorian_ordinal(y1, m1, d1))
+                    generate_candidates(input, "shijian", seg, { { tostring(diff) .. "天", "" } })
+                else
+                    set_segment_prompt(context, " 〔日期不存在〕")
+                end
+            end
+        end
+
+        if not handled and ndate_mode then
             local yr = os.date("%Y")
 
             -- NMMDD：长度=4，且“不是年份（19xx/20xx）”时才当作月日
@@ -2437,6 +2528,13 @@ local function translator(input, seg, env)
                             { string.format("%d月%d日", mm, dd), "" },
                             { string.format("%02d月%02d日", mm, dd), "" }
                         }
+                        local human_day, human_week = human_relative_date(tonumber(yr), mm, dd)
+                        if human_day then
+                            table.insert(candidates, { human_day, "" })
+                        end
+                        if human_week then
+                            table.insert(candidates, { human_week, "" })
+                        end
                         for _, cand in ipairs(lunar) do
                             local text = cand[1]
                             if not text:match("%d") then
@@ -2850,7 +2948,7 @@ local function translator(input, seg, env)
         -- 将今天的多个节日拼接（例如 "龙抬头 春分"）
         local zero_holiday_str = nil
         if #zero_holidays > 0 then
-            zero_holiday_str = table.concat(zero_holidays, " ") .. " "
+            zero_holiday_str = table.concat(zero_holidays, " ")
         end
 
         -- 防御性兜底：万一节日不足2个
@@ -2859,7 +2957,14 @@ local function translator(input, seg, env)
         end
 
         -- 获取三伏天
-        local sanfu = get_sanfu_info(current_ymd) or ""
+        local sanfu = get_sanfu_info(current_ymd)
+        local shujiu = get_shujiu_info(current_ymd)
+        local today_items = {}
+        if zero_holiday_str then table.insert(today_items, zero_holiday_str) end
+        if zero_jieqi then table.insert(today_items, zero_jieqi) end
+        if sanfu then table.insert(today_items, sanfu) end
+        if shujiu then table.insert(today_items, shujiu) end
+        local today_info = table.concat(today_items, " ")
         
         -- 生成问候语
         local function get_greeting()
@@ -2897,7 +3002,7 @@ local function translator(input, seg, env)
 
         local zwsp = "\226\128\139"
         local summary = string.format("※嗨，我是万象小助手，%s", greeting) .. zwsp .. "\n" .. line .. zwsp .. "\n" ..
-            string.format("☉ 今天是：%s%s%s", zero_holiday_str or "", zero_jieqi or "", sanfu) .. zwsp .. "\n" ..
+            string.format("☉ 今天是：%s", today_info) .. zwsp .. "\n" ..
             string.format("☉ %d年%d月%d日 %s", year, month, day, week_day_str) .. zwsp .. "\n" ..
             string.format("☉ 农历：%s", lunar_info_str) .. zwsp .. "\n" .. line .. zwsp .. "\n" ..
             string.format("◉ %d进度：", year) .. zwsp .. "\n" .. 
