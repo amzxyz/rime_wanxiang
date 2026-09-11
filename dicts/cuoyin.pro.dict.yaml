@@ -151,15 +151,15 @@ sort: by_weight
 嵊州	chéng;ui zhōu;id,da	762	shèng zhōu
 吱声	zhī;kv shēng;um	1468	zī shēng
 脖颈	bó;ob,oz jǐng;yg	480	bó gěng
-脖颈儿	bó;ob,oz jǐng;yg er;pg	10	bó gěng er
-草薙剑	cao;cz zhi;cv jian;da,dq	318	cǎo tì jiàn
-草薙京	cao;cz zhi;cv jing;wx	254	cǎo tì jīng
-大宛马	dà;ad wǎn;be,by mǎ;aa,vh	10	dà yuān mǎ
+脖颈儿	bó;ob,oz jǐng;yg er;pg	10	脖颈(gěng)儿
+草薙剑	cao;cz zhi;cv jian;da,dq	318	草薙(tì)剑
+草薙京	cao;cz zhi;cv jing;wx	254	草薙(tì)京
+大宛马	dà;ad wǎn;be,by mǎ;aa,vh	10	大宛(yuān)马
 独乐乐	dú;qi lè;pd,px lè;pd,px	10	dú yuè lè
 众乐乐	zhòng;rc lè;pd,px lè;pd,px	20	zhòng yuè lè
-海参崴	hǎi;dm shēn;sp wēi;uw	385	hǎi shēn wǎi
-贾平凹	jià;bx,xb píng;aa,gb wā;aa	250	jiǎ píng āo
-卡脖子	kǎ;bx,ub bó;ob,oz zi;aa,vh	310	qiǎ bó zi
+海参崴	hǎi;dm shēn;sp wēi;uw	385	海参崴(wǎi)
+贾平凹	jiǎ;bx,xb píng;aa,gb āo;aa	250	贾平凹(wā)
+卡脖子	kǎ;bx,ub bó;ob,oz zi;aa,vh	310	卡(qiǎ)脖子
 六安	liù;wb ān;bn	628	lù ān
 六安市	liù;wb ān;bn shì;wj	88	lù ān shì
 六安县	liù;wb ān;bn xiàn;sq,qs	10	lù ān xiàn
@@ -170,7 +170,7 @@ sort: by_weight
 南京六合区	nán;ua,uy jīng;wx liù;wb hé;rk qū;ki	1	nán jīng lù hé qū
 安徽省六安市	ān;bn huī;xw shěng;ou liù;wb ān;bn shì;wj	1	ān huī shěng lù ān shì
 南京市六合区	nán;ua,uy jīng;wx shì;wj liù;wb hé;rk qū;ki	1	nán jīng shì lù hé qū
-螺蛳粉	luó;il shī;iu fěn;mf	150	luó sī fěn
+螺蛳粉	luó;il shī;iu fěn;mf	150	螺蛳(sī)粉
 温庭筠	wēn;dm,dw tíng;gt jūn;vj	210	温庭筠(yún)
 关卡	guān;qd,bt kǎ;bx,ub	14734	guān qiǎ
 牛皮癣	niú;pa pí;ay,vy xiǎn;bx	289	(癣)xuǎn
@@ -180,12 +180,12 @@ sort: by_weight
 魔蝎座	mó;gm,mg xiē;ih zuò;gz	403	摩羯(jié)座
 鄱阳湖	pan;ef yang;eo hu;dh	250	pó yáng hú
 契科夫	qī;dd kē;hd fū;ad,er	524	契诃(hē)夫
-太行山	tài;dd xíng;xd,xi shān;aa	390	tài háng shān
-头皮屑	tóu;dd pí;ay,vy xuè;ux	530	tóu pi xiè
+太行山	tài;dd xíng;xd,xi shān;aa	390	太行(háng)山
+头皮屑	tóu;dd pí;ay,vy xuè;ux	530	头皮屑(xiè)
 万柏林	wàn;ag,ap bó;mb lín;mm	10	万柏(bǎi)林
-雪佛兰	xuě;yx fó;rf lán;bs,qe	370	xuě fú lán
+雪佛兰	xuě;yx fó;rf lán;bs,qe	370	雪佛(fú)兰
 鸭绿江	yā;nj,jn lǜ;sl jiāng;dg	150	yā lù jiāng
-张柏芝	zhāng;gi bǎi;mb zhī;cv	1056	zhāng bó zhī
+张柏芝	zhāng;gi bǎi;mb zhī;cv	1056	张柏(bó)芝
 阿弥陀佛	ā;ek mí;ge tuó;et fó;rf	37	ē mí tuó fó
 南无阿弥陀佛	nā;ua,uy mó;ag,ay ā;ek mí;ge tuó;et fó;rf	4	nā mó ē mí tuó fó
 南无阿弥陀佛	nán;ua,uy wú;ag,ay ā;ek mí;ge tuó;et fó;rf	4	nā mó ē mí tuó fó
