@@ -86,6 +86,30 @@ local shichen_data = {
 
 local ke_names = { "初刻", "二刻", "三刻", "四刻", "五刻", "六刻", "七刻", "八刻" }
 
+local relative_week_tokens = {
+    ["\\上周一"] = { week = -1, weekday = 1 },
+    ["\\上周二"] = { week = -1, weekday = 2 },
+    ["\\上周三"] = { week = -1, weekday = 3 },
+    ["\\上周四"] = { week = -1, weekday = 4 },
+    ["\\上周五"] = { week = -1, weekday = 5 },
+    ["\\上周六"] = { week = -1, weekday = 6 },
+    ["\\上周日"] = { week = -1, weekday = 7 },
+    ["\\本周一"] = { week =  0, weekday = 1 },
+    ["\\本周二"] = { week =  0, weekday = 2 },
+    ["\\本周三"] = { week =  0, weekday = 3 },
+    ["\\本周四"] = { week =  0, weekday = 4 },
+    ["\\本周五"] = { week =  0, weekday = 5 },
+    ["\\本周六"] = { week =  0, weekday = 6 },
+    ["\\本周日"] = { week =  0, weekday = 7 },
+    ["\\下周一"] = { week =  1, weekday = 1 },
+    ["\\下周二"] = { week =  1, weekday = 2 },
+    ["\\下周三"] = { week =  1, weekday = 3 },
+    ["\\下周四"] = { week =  1, weekday = 4 },
+    ["\\下周五"] = { week =  1, weekday = 5 },
+    ["\\下周六"] = { week =  1, weekday = 6 },
+    ["\\下周日"] = { week =  1, weekday = 7 },
+}
+
 local function get_shichen_and_ke(hour, min)
     local total_minutes = hour * 60 + min
     for _, shichen in ipairs(shichen_data) do
@@ -203,6 +227,33 @@ local function build_datetime_map(dt)
     }
 end
 
+local function format_relative_week_token(token)
+    local spec = relative_week_tokens[token]
+    if not spec then return nil end
+
+    local now = os.date("*t")
+    local current_weekday = (now.wday == 1) and 7 or (now.wday - 1)
+    local delta_days = spec.week * 7 + (spec.weekday - current_weekday)
+    local target_ts = os.time({
+        year = now.year, month = now.month, day = now.day + delta_days,
+        hour = 12, min = 0, sec = 0, isdst = nil
+    })
+    if not target_ts then return nil end
+
+    local target_dt = os.date("*t", target_ts)
+    local map = build_datetime_map(target_dt)
+    return map.N .. "月" .. map.j .. "日"
+end
+
+local function match_relative_week_token(text, pos)
+    for token in pairs(relative_week_tokens) do
+        if sub(text, pos, pos + #token - 1) == token then
+            return token
+        end
+    end
+    return nil
+end
+
 -- 3. 转义处理：严格按源文本从左到右消费，每个片段只解释一次。
 local function apply_escape_fast(text)
     if not text or not find(text, "\\", 1, true) then return text, false end
@@ -240,6 +291,17 @@ local function apply_escape_fast(text)
             if i == len then
                 push("\\")
                 break
+            end
+
+            local relative_token = match_relative_week_token(text, i)
+            if relative_token then
+                local relative_text = format_relative_week_token(relative_token)
+                if relative_text then
+                    push(relative_text)
+                    changed = true
+                    i = i + #relative_token
+                    goto continue
+                end
             end
 
             local next_char = sub(text, i + 1, i + 1)
