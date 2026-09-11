@@ -131,6 +131,7 @@ sort: by_weight
 爱巴鸟尾蛤	ài;ep bā;cn niǎo;qy wěi;nt há;jw	10
 爱比克泰德	ài;ep bǐ;xx kè;dq tài;dw dé;tf	10
 爱彼女皇杯	ài;ep bǐ;th nǚ;vv huáng;rg bēi;sg	10
+爱博而心劳	ài;ep bó;fg ér;dm xīn;ny láo;ap	10
 爱不爱我吧	ài;ep bú;gi ài;ep wǒ;tr ba;kc	10
 爱不爱我吗	ài;ep bú;gi ài;ep wǒ;tr ma;kc	10
 爱不再回来	ài;ep bú;gi zài;gm huí;lk lái;go	10
@@ -43531,9 +43532,9 @@ sort: by_weight
 漫湾水电站	màn;ij wān;iy shuǐ;ii diàn;jn zhàn;uh	10
 漫威的电影	màn;ij wēi;dg de;rq diàn;jn yǐng;jy	10
 漫无目的地	màn;ij wú;fq mù;hh dì;rq dì;fb	10
-满血复活了	mǎn;ia xiě;tl fù;tj huó;it le;bn	10
 满心的欢喜	mǎn;ia xīn;ny de;rq huān;cq xǐ;fk	10
 慢性病监测	màn;nj xìng;nt bìng;ug jiān;jt cè;im	10
+满血复活了	mǎn;ia xuè;tl fù;tj huó;it le;bn	10
 满眼的绿色	mǎn;ia yǎn;hv de;rq lǜ;xv sè;qc	10
 蔓叶类函数	màn;aj yè;kf lèi;od hán;bi shù;ov	10
 蔓叶类曲线	màn;aj yè;kf lèi;od qū;ma xiàn;xg	10
@@ -84701,6 +84702,7 @@ sort: by_weight
 再来些葱花	zài;gm lái;go xiē;hx cōng;aq huā;aw	10
 栽了大跟头	zāi;fa le;bn dà;dd gēn;kh tou;ud	10
 栽了个跟头	zāi;fa le;bn gè;wh gēn;kh tou;ud	10
+甾类化合物	zāi;vl lèi;od huà;wx hé;wg wù;tr	10
 在冷战期间	zài;dh lěng;uw zhàn;hk qī;ad jiān;uj	10
 在理发店里	zài;dh lǐ;gj fà;nt diàn;yh lǐ;jf	10
 在离婚以后	zài;dh lí;yb hūn;vq yǐ;ny hòu;rg	10
@@ -90411,7 +90413,6 @@ sort: by_weight
 自来水净化	zì;th lái;go shuǐ;ii jìng;uq huà;wx	10
 自来水之污	zì;th lái;go shuǐ;ii zhī;pp wū;if	10
 自来也老师	zì;th lái;go yě;bn lǎo;ft shī;jg	10
-甾类化合物	zī;vl lèi;od huà;wx hé;wg wù;tr	10
 子类型多态	zǐ;bb lèi;od xíng;ga duō;qq tài;dy	10
 字里行间里	zì;pb lǐ;jf háng;tf jiān;uj lǐ;jf	10
 字里行间中	zì;pb lǐ;jf háng;tf jiān;uj zhōng;kh	10
@@ -92618,7 +92619,7 @@ sort: by_weight
 八大夜叉大将	bā;wt dà;dd yè;yw chā;cy dà;dd jiàng;uq	10
 巴丹半岛战役	bā;cn dān;my bàn;uf dǎo;qy zhàn;hk yì;tm	10
 坝道工程医院	bà;fm dào;ut gōng;aa chéng;tk yī;at yuàn;bp	10
-霸道总裁范儿	bà;fa dào;ut zǒng;uk cái;fa fàn;ai ér;qt	10
+霸道总裁范儿	bà;fa dào;ut zǒng;uk cái;fa fàn;ai er;qt	10
 巴登符腾堡州	bā;cn dēng;wg fú;tw téng;eu bǎo;wk zhōu;yt	10
 巴登号铁甲舰	bā;cn dēng;wg hào;kg tiě;qr jiǎ;lh jiàn;te	10
 八点半的星光	bā;wt diǎn;hk bàn;uf de;rq xīng;jt guāng;iq	10
@@ -121122,7 +121123,7 @@ sort: by_weight
 女神的圣斗士	nǚ;vv shén;py de;rq shèng;cf dòu;uf shì;fg	10
 女神的十字架	nǚ;vv shén;py de;rq shí;fg zì;pb jià;lk	10
 女神迪丽热巴	nǚ;vv shén;py dí;mp lì;gm rè;rv bā;cn	10
-女神范儿十足	nǚ;vv shén;py fàn;ai ér;qt shí;fg zú;kh	10
+女神范儿十足	nǚ;vv shén;py fàn;ai er;qt shí;fg zú;kh	10
 女神和女汉子	nǚ;vv shén;py hé;tk nǚ;vv hàn;ic zi;bb	10
 女生殖器结核	nǚ;vv shēng;tg zhí;gq qì;kk jié;xf hé;sy	10
 女同性恋电影	nǚ;vv tóng;mg xìng;nt liàn;yo diàn;jn yǐng;jy	10
@@ -121132,7 +121133,7 @@ sort: by_weight
 女同性恋组织	nǚ;vv tóng;mg xìng;nt liàn;yo zǔ;xe zhī;xk	10
 女同性恋作家	nǚ;vv tóng;mg xìng;nt liàn;yo zuò;wt jiā;pe	10
 女娲炼石补天	nǚ;vv wā;vk liàn;oa shí;dg bǔ;pu tiān;gd	10
-女王范儿十足	nǚ;vv wáng;gg fàn;ai ér;qt shí;fg zú;kh	10
+女王范儿十足	nǚ;vv wáng;gg fàn;ai er;qt shí;fg zú;kh	10
 女王圣诞致辞	nǚ;vv wáng;gg shèng;cf dàn;yt zhì;gc cí;td	10
 女为悦己者容	nǚ;vv wéi;yl yuè;nu jǐ;nn zhě;ft róng;pw	10
 女武神的餐桌	nǚ;vv wǔ;ga shén;py de;rq cān;hq zhuō;hj	10
@@ -141458,7 +141459,7 @@ sort: by_weight
 雨夹雪转小雪	yǔ;fg jiā;gu xuě;fv zhuǎn;lf xiǎo;ih xuě;fv	10
 宇迦之御魂神	yǔ;pg jiā;lk zhī;pp yù;tr hún;fc shén;py	10
 预见方能遇见	yù;cb jiàn;mq fāng;yy néng;ce yù;jm jiàn;mq	10
-御姐范儿十足	yù;tr jiě;ve fàn;ai ér;qt shí;fg zú;kh	10
+御姐范儿十足	yù;tr jiě;ve fàn;ai er;qt shí;fg zú;kh	10
 预紧式安全带	yù;cb jǐn;jc shì;aa ān;pv quán;wg dài;gk	10
 榆靖高速公路	yú;sw jìng;ug gāo;ym sù;gk gōng;wc lù;kh	10
 寓京师千佛寺	yù;pj jīng;yi shī;jg qiān;tf fó;wx sì;ff	10
