@@ -432,6 +432,13 @@ super_replacer:
       prefix: "_s2tw_"
       files:
         - lua/data/TWVariants.txt
+    - option: true
+      mode: append
+      sentence: true
+      tags: [abc]
+      prefix: "_ling_"
+      files:
+        - lua/data/ling.txt
     - option: abbrev
       mode: abbrev  # <--- 新增的简码模式
       tags: [abc]
