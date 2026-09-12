@@ -3447,6 +3447,7 @@ sort: by_weight
 大埔镇	dà;ad bù;tf zhèn;jv	91
 大布镇	dà;ad bù;ju,uj zhèn;jv	79
 大才乡	dà;ad cái;ap xiāng;ap,vp	23
+大仓镇	dà;ad cāng;re zhèn;jv	84
 大槽乡	dà;ad cáo;mc xiāng;ap,vp	178
 大草站	dà;ad cǎo;cz zhàn;lv	202
 大曹镇	dà;ad cáo;oc,co zhèn;jv	96
@@ -19159,7 +19160,6 @@ sort: by_weight
 太仓市	tài;dd cāng;re shì;wj	10
 太仓县	tài;dd cāng;re xiàn;sq,qs	100
 太仓站	tài;dd cāng;re zhàn;lv	346
-大仓镇	tài;ad cāng;re zhèn;jv	84
 太昌镇	tài;dd chāng;oo zhèn;jv	10
 台陈镇	tái;sk chén;ed zhèn;jv	10
 台城乡	tái;sk chéng;ti xiāng;ap,vp	10
@@ -31873,6 +31873,7 @@ sort: by_weight
 大堡子村	dà;ad bǔ;tb zi;aa,vh cūn;mc	10
 大堡子镇	dà;ad bǔ;tb zi;aa,vh zhèn;jv	10
 大菜园村	dà;ad cài;cc yuán;ky cūn;mc	10
+大仓盖镇	dà;ad cāng;re gài;my,ym zhèn;jv	10
 大草房村	dà;ad cǎo;cz fáng;hf cūn;mc	10
 大操鲁村	dà;ad cāo;fz lǔ;yo cūn;mc	10
 大草坡村	dà;ad cǎo;cz pō;tp cūn;mc	10
@@ -56133,6 +56134,7 @@ sort: by_weight
 时村社区	shí;oc cūn;mc shè;ut,tu qū;ki	4
 时村营乡	shí;oc cūn;mc yíng;cl xiāng;ap,vp	10
 施厝坪庄	shī;fy cuò;ix píng;tp zhuāng;gt	10
+石大仓乡	shí;pk,kp dà;ad cāng;re xiāng;ap,vp	10
 石大关乡	shí;pk,kp dà;ad guān;qd,bt xiāng;ap,vp	10
 石大关站	shí;pk,kp dà;ad guān;qd,bt zhàn;lv	45
 师大社区	shī;ab,db dà;ad shè;ut,tu qū;ki	189
@@ -56792,7 +56794,6 @@ sort: by_weight
 史塔罕堡	shǐ;ki,ad tǎ;td,th hǎn;bg bǎo;tb	10
 石塔河村	shí;pk,kp tǎ;td,th hé;dk cūn;mc	10
 石塔庄村	shí;pk,kp tǎ;td,th zhuāng;gt cūn;mc	10
-石大仓乡	shí;pk,kp tài;ad cāng;re xiāng;ap,vp	10
 石台沟村	shí;pk,kp tái;sk gōu;dg cūn;mc	10
 石太山村	shí;pk,kp tài;dd shān;aa cūn;mc	10
 石台寺村	shí;pk,kp tái;sk sì;ct,tc cūn;mc	10
@@ -58546,7 +58547,6 @@ sort: by_weight
 台北中山	tái;sk běi;ap,bj zhōng;aa,ka shān;aa	10
 台北中正	tái;sk běi;ap,bj zhōng;aa,ka zhèng;av	10
 太本站镇	tài;dd běn;aa,ma zhàn;lv zhèn;jv	10
-大仓盖镇	tài;ad cāng;re gài;my,ym zhèn;jv	10
 台城街道	tái;sk chéng;ti jiē;xg,xi dào;zu	10
 太春沟村	tài;dd chūn;of,fo gōu;dg cūn;mc	10
 台东街道	tái;sk dōng;ad,qx jiē;xg,xi dào;zu	10
