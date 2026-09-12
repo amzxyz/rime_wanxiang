@@ -576,6 +576,13 @@ super_replacer:
       prefix: "_s2tw_"
       files:
         - lua/data/TWVariants.txt
+    - option: true
+      mode: append
+      sentence: true
+      tags: [abc]
+      prefix: "_ling_"
+      files:
+        - lua/data/ling.txt
     - option: abbrev  # 对应上面开关名称
       exclude_types: [pinyin]   # 该节点排除全拼使用
       mode: abbrev
