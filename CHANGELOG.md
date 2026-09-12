@@ -1,5 +1,42 @@
 # Changelog
 
+## [17.10.0](https://github.com/amzxyz/rime-wanxiang/compare/v17.9.9...v17.10.0) (2026-09-12)
+
+
+### ✨ 新特性
+
+* **shijian.lua:** 补齐日期差、N0101格式说人话、数九天 ([34e763e](https://github.com/amzxyz/rime-wanxiang/commit/34e763e02bb8a98de4ac89bb1d6adbc2ed8ac924))
+* **shijian:** 对于下周三、下礼拜三、下星期三语境提供动态格式化日期 ([243faf5](https://github.com/amzxyz/rime-wanxiang/commit/243faf50d3e008b62b16f0c782c695f29bd2e526))
+* 增加汉字年月日零到〇的句子级别转换 ([4fffe52](https://github.com/amzxyz/rime-wanxiang/commit/4fffe52313bcc7d26ca95bcbb7112d33f35c6c25))
+
+
+### 📚 词库更新
+
+* 词库调整 ([e3640aa](https://github.com/amzxyz/rime-wanxiang/commit/e3640aad97b0d387b3ac478b3708a1b0d1210dc3))
+* 词库调整 ([c7b397f](https://github.com/amzxyz/rime-wanxiang/commit/c7b397fb97162a6ce417581cdb16c088ae145d63))
+* 词库调整 ([da637e4](https://github.com/amzxyz/rime-wanxiang/commit/da637e4319feecdc192c33704e8970a9cb1f5ef7))
+* 词库调整 ([175d54a](https://github.com/amzxyz/rime-wanxiang/commit/175d54af7dc08fc099852bbb5f45304816990d3c))
+* 词库调整 ([8cd60d4](https://github.com/amzxyz/rime-wanxiang/commit/8cd60d4d28190c474192773c5570248fa8306533))
+* 词库调整 ([669d3af](https://github.com/amzxyz/rime-wanxiang/commit/669d3af7a53a3ec0fd268a82bbeb0b0f948ae944))
+
+
+### 🐛 Bug 修复
+
+* 优化同文皮肤 ([bcc39c8](https://github.com/amzxyz/rime-wanxiang/commit/bcc39c836d00d5ea1a8ea99e756ddcc1faa415cc))
+* 手动排序按字母查询穿透 ([43f65bd](https://github.com/amzxyz/rime-wanxiang/commit/43f65bdec556469e0f602899b97f1dbe51429747))
+* 手动排序改回短生命周期的前缀扫描 ([a39865b](https://github.com/amzxyz/rime-wanxiang/commit/a39865b7fe06b6121ec62d6839ddbdcf1a97ca8b))
+* 排序时单字母捕不参与排序，但吞掉按键避免对操作系统窗口操作 ([769cdf1](https://github.com/amzxyz/rime-wanxiang/commit/769cdf1c83b88e25a24ad6d047a19ba5cb36fdda))
+* 统一调用语义 ([f65df4a](https://github.com/amzxyz/rime-wanxiang/commit/f65df4a980d7fb3235c129b2b20f4506fd640da8))
+* 脚本进行缓存上面的优化 ([588b2da](https://github.com/amzxyz/rime-wanxiang/commit/588b2da327cfb51d5358b43ddcf0e6f83f80d711))
+* 超级替换深化效率 ([b2fc625](https://github.com/amzxyz/rime-wanxiang/commit/b2fc625c20856299d0225361de27fafbae57c478))
+* 还原脚本 ([cbd6193](https://github.com/amzxyz/rime-wanxiang/commit/cbd6193311e97328757cc1f0775d08e052075dee))
+
+
+### 🏡 杂项
+
+* 变更文档 ([53f8a72](https://github.com/amzxyz/rime-wanxiang/commit/53f8a7207423884a24c0f163d97b1fd1d1c85bbf))
+* 更新文档 ([1dab297](https://github.com/amzxyz/rime-wanxiang/commit/1dab297c7abeee199dc2866f7994d5dba5fe0844))
+
 ## [17.9.9](https://github.com/amzxyz/rime-wanxiang/compare/v17.9.8...v17.9.9) (2026-09-08)
 
 
