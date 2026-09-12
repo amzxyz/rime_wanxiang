@@ -680,7 +680,11 @@ function P.func(key_event, env)
 
     local adjust_code = context.input:sub(1, context.caret_pos)
 
+    -- 单字母编码不执行排序，但排序快捷键必须在 Rime 内吞掉，避免继续穿透给操作系统。
     if is_single_lowercase_letter(adjust_code) then
+        if key_repr == up or key_repr == down or key_repr == reset or key_repr == pin then
+            return wanxiang.RIME_PROCESS_RESULTS.kAccepted
+        end
         return wanxiang.RIME_PROCESS_RESULTS.kNoop
     end
 
