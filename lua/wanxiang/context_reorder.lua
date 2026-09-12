@@ -527,7 +527,7 @@ function P.func(key, env)
         reset_runtime_state()
         clear_undo(env)
         env.need_delete_refresh = false
-        return 2
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop
     end
 
     -- 原生删词已经完成后，再在下一次按键事件里刷新当前 composition。
@@ -542,7 +542,7 @@ function P.func(key, env)
         end
     end
 
-    if key:release() then return 2 end
+    if key:release() then return wanxiang.RIME_PROCESS_RESULTS.kNoop end
 
     local repr = key:repr()
     local is_composing = ctx:is_composing()
@@ -567,12 +567,12 @@ function P.func(key, env)
     -- 上屏后立即退格：撤销本次 1/2-Gram 数据库写入。
     if is_backspace and not is_composing then
         rollback_last_commit(env)
-        return 2
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop
     end
 
     -- 一旦开始下一次实际输入，上一笔提交就不再允许回滚数据库。
     if env.just_committed and not is_backspace and not has_modifier then clear_undo(env) end
-    return 2
+    return wanxiang.RIME_PROCESS_RESULTS.kNoop
 end
 
 function P.fini(env)
