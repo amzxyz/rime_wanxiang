@@ -614,7 +614,7 @@ end
 
 function P.func(key, env)
     if key:release() then
-        return 2
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop
     end
 
     local ctx = env.engine.context
@@ -635,7 +635,7 @@ function P.func(key, env)
         env.typed_in_ascii = true
     end
 
-    return 2
+    return wanxiang.RIME_PROCESS_RESULTS.kNoop
 end
 
 local F = {}
