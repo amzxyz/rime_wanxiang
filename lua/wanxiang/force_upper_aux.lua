@@ -139,13 +139,13 @@ end
 
 -- 核心逻辑
 function ForceUpperAux.func(key_event, env)
-    if key_event:release() then return 2 end
+    if key_event:release() then return wanxiang.RIME_PROCESS_RESULTS.kNoop end
     local ctx = env.engine.context
     
     -- 拦截移动端的奇怪按键触发
     local raw_in = ctx.input or ""
     if raw_in == "" or not raw_in:match("^[a-zA-Z0-9/]") then 
-        return 2 
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop 
     end
     
     local current_key = key_event:repr()
@@ -155,16 +155,16 @@ function ForceUpperAux.func(key_event, env)
         if env.original_input ~= "" then ctx.input = env.original_input end
         env.press_count = 0
         env.is_cycling = false
-        return 1
+        return wanxiang.RIME_PROCESS_RESULTS.kAccepted
     end
 
     -- 拦截特殊模式
     if wanxiang.is_special_mode(ctx) then 
-        return 2
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop
     end
 
     if current_key == env.trigger_key then
-        if not ctx:is_composing() then return 2 end
+        if not ctx:is_composing() then return wanxiang.RIME_PROCESS_RESULTS.kNoop end
         
         if env.press_count == 0 then
             env.original_input = ctx.input
@@ -195,7 +195,7 @@ function ForceUpperAux.func(key_event, env)
                 candidate_text = env.history_first[apply_until] or get_utf8_prefix(env.snapshot_current_full, apply_until)
             else
                 if env.original_input ~= "" then ctx.input = env.original_input end
-                return 1
+                return wanxiang.RIME_PROCESS_RESULTS.kAccepted
             end
         end
         
@@ -223,15 +223,15 @@ function ForceUpperAux.func(key_event, env)
         end
 
         if not found_any_aux then
-            env.press_count = 0; env.is_cycling = false; return 2
+            env.press_count = 0; env.is_cycling = false; return wanxiang.RIME_PROCESS_RESULTS.kNoop
         end
 
         local new_input = table.concat(new_input_parts)
         if new_input ~= ctx.input then ctx.input = new_input end
-        return 1 
+        return wanxiang.RIME_PROCESS_RESULTS.kAccepted 
         
     else
-        env.press_count = 0; env.is_cycling = false; return 2 
+        env.press_count = 0; env.is_cycling = false; return wanxiang.RIME_PROCESS_RESULTS.kNoop 
     end
 end
 
