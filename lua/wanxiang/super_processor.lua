@@ -8,8 +8,6 @@
 local wanxiang = require("wanxiang/wanxiang")
 local M = {}
 
-local K_REJECT, K_ACCEPT, K_NOOP = 0, 1, 2
-
 -- 1. 全局常量定义 (Constants)
 
 -- [KpNumber] 小键盘键码映射
@@ -804,51 +802,51 @@ function M.func(key, env)
     -- 1. 优先处理按键释放
     if key:release() then 
         handle_backspace(key, env, ctx)
-        return K_NOOP 
+        return wanxiang.RIME_PROCESS_RESULTS.kNoop 
     end
 
     local kc = key.keycode
 
     -- [Predict Space] 联想空格
     if kc == 0x20 then
-        if handle_predict_space(key, env, ctx) then return K_ACCEPT end
+        if handle_predict_space(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     end
 
     -- 2. QuickSymbol 拦截 (a-z + /)
     if handle_quick_symbol_intercept(key, env, ctx) then
-        return K_ACCEPT
+        return wanxiang.RIME_PROCESS_RESULTS.kAccepted
     end
 
     -- 3. Backspace 退格防止删除已上屏内容
     if kc == 0xFF08 then
-        if handle_backspace(key, env, ctx) then return K_ACCEPT end
+        if handle_backspace(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     end
 
     -- 4. Select Character 以词定字 (New!)
     -- 它的优先级很高，因为是针对当前候选的操作
     -- 但必须在 Backspace 之后，防止误操作
     if handle_select_character(key, env, ctx) then
-        return K_ACCEPT
+        return wanxiang.RIME_PROCESS_RESULTS.kAccepted
     end
 
     -- 5. 分词符 ' [SuperSegmentation] 处理分词符 '
     if kc == 0x27 then
-        if handle_segmentation(key, env, ctx) then return K_ACCEPT end
+        if handle_segmentation(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     end
 
     -- 6. 字母键 (a-z)[Limit Repeated] 重复输入限制
     if kc >= 0x61 and kc <= 0x7A then
-        if handle_limit_repeat(key, env, ctx) then return K_ACCEPT end
+        if handle_limit_repeat(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     end
 
     -- 7. (q-o + 特定 Tag)[Letter Selector] 字母选词
     if env.ls_active and (LETTER_SEL_MAP[kc] ~= nil) then
-        if handle_letter_select(key, env, ctx) then return K_ACCEPT end
+        if handle_letter_select(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     end
 
     -- 8. 数字键 (小键盘 + 声调 + 选词)[KpNumber & ToneFallback] 数字键综合逻辑
     if (kc >= 0xFFB0 and kc <= 0xFFB9) or (kc >= 0x30 and kc <= 0x39) then
-        if handle_number_logic(key, env, ctx) then return K_ACCEPT end
+        if handle_number_logic(key, env, ctx) then return wanxiang.RIME_PROCESS_RESULTS.kAccepted end
     else
         -- 非数字键，重置声调状态
         if env.enable_tone_fallback then
@@ -856,6 +854,6 @@ function M.func(key, env)
         end
     end
 
-    return K_NOOP
+    return wanxiang.RIME_PROCESS_RESULTS.kNoop
 end
 return M
